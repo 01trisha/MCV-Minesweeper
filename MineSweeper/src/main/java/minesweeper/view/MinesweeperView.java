@@ -1,4 +1,8 @@
 package minesweeper.view;
 
-public class MinesweeperView {
+import minesweeper.observ.Observer;
+
+public interface MinesweeperView extends Observer {
+    void display();
+
 }
