@@ -10,8 +10,6 @@ import java.util.List;
 public class MinesweeperModel implements Observable {
     private final List<Observer> observers = new ArrayList<>();
     private final int[][] field;
-    private boolean[][] revealed;
-    private boolean[][] flag;
     private boolean gameOver;
     private final int bomb;
 
@@ -34,9 +32,6 @@ public class MinesweeperModel implements Observable {
     public void openCell(int x, int y){
         revealed[x][y] = true;
     }
-
-
-
 
 
 
