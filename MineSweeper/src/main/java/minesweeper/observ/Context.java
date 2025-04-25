@@ -1,30 +1,22 @@
 package minesweeper.observ;
 
+import minesweeper.model.Field;
+import minesweeper.model.GameState;
+
 public class Context {
-    private final int[][] field;
-    private final boolean[][] revealed;
-    private final boolean[][] flag;
-    private final boolean gameOver;
+    private final Field field;
+    private final GameState gameState;
 
-
-    public Context(int[][] field, boolean[][] revealed, boolean[][] flag, boolean gameOver) {
+    public Context(Field field, GameState gameState) {
         this.field = field;
-        this.revealed = revealed;
-        this.flag = flag;
-        this.gameOver = gameOver;
+        this.gameState = gameState;
     }
 
-    public int[][] getField() {
+    public Field getField(){
         return field;
     }
-    public boolean[][] getRevealed(){
-        return revealed;
-    }
-    public boolean isGameOver(){
-        return gameOver;
-    }
-    public boolean[][] getFlag(){
-        return flag;
-    }
 
+    public GameState getGameState(){
+        return gameState;
+    }
 }

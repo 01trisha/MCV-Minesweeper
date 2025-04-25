@@ -2,13 +2,13 @@ package minesweeper.model;
 
 public class Cell {
     private char sym;
-    private boolean is_flag;
-    private boolean is_open;
+    private boolean isFlag;
+    private boolean isOpen;
 
     public Cell() {
         this.sym = '0';
-        this.is_flag = false;
-        this.is_open = false;
+        this.isFlag = false;
+        this.isOpen = false;
     }
 
     public char getSym(){
@@ -19,13 +19,24 @@ public class Cell {
     }
 
     public boolean isFlag(){
-        return is_flag;
+        return isFlag;
     }
-//    public boolean setFlag(){
-//
-//    }
+    public void setFlag(boolean flag){
+        this.isFlag = flag;
+    }
 
     public boolean isOpen(){
-        return is_open;
+        return isOpen;
+    }
+
+    public void setOpen(boolean open){
+        this.isOpen = open;
+    }
+
+    public boolean isMine(){
+        if (sym == 'M'){
+            return true;
+        }
+        return false;
     }
 }
