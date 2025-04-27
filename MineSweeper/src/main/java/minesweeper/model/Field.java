@@ -9,6 +9,7 @@ public class Field {
         this.height = height;
         this.width = width;
         this.cells = new Cell[height][width];
+        creatingCells();
     }
 
     private void creatingCells(){
