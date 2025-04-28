@@ -1,5 +1,7 @@
 package minesweeper.model;
 
+import java.util.Random;
+
 public class Field {
     private final int height;
     private final int width;
@@ -47,8 +49,21 @@ public class Field {
         cell.setFlag(!cell.isFlag());
     }
 
-    public void setMines(int x, int y){
+    public void setMines(int x, int y, int mines){
+        Random random = new Random();
+        int placed_mines = 0;
 
+        while (placed_mines < mines){
+            int randX = random.nextInt(height);
+            int randY = random.nextInt(width);
+
+            if ((randX == x && randY == y) || cells[randX][randY].isMine()){
+                continue;
+            }
+
+            cells[randX][randY].setSym('M');
+            placed_mines++;
+        }
     }
 
     public void openFreeCells(int x, int y){

@@ -39,10 +39,17 @@ public class MinesweeperController {
     }
 
     public void newGame(){
-        int[] param = getParameters();
-        model.newGame(param[0], param[1], param[2]);
-        scanner.nextLine();
-
+        while (true) {
+            try {
+                int[] param = getParameters();
+                model.newGame(param[0], param[1], param[2]);
+                scanner.nextLine();
+                break;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                scanner.nextLine();
+            }
+        }
         while (true){
             switch (model.getGameState()){
                 case PLAYING:

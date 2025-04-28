@@ -20,7 +20,15 @@ public class MinesweeperModel implements Observable {
         this.gameState = GameState.CONFIGURING;
     }
 
-    public void newGame(int height, int width, int bomb){
+    public void newGame(int height, int width, int bomb) {
+        if (height <= 0 || width <= 0) {
+            throw new IllegalArgumentException("Размер поля должен быть положительным");
+        }
+
+        if (bomb <= 0 || bomb >= height * width) {
+            throw new IllegalArgumentException("Количество мин должно быть от 1 до " + (height * width - 1));
+        }
+
         this.gameState = GameState.PLAYING;
         this.field = new Field(height, width);
         this.count_bomb = bomb;
@@ -30,25 +38,25 @@ public class MinesweeperModel implements Observable {
     }
 
     public void openCell(int x, int y){
-
-        if (field.isCellOpen(x, y)) {
-            return;
-        }
-
         if (field.isCellMine(x, y)){
             setGameState(GameState.LOST);
+        }else {
+            if (field.isCellOpen(x, y)) {
+                return;
+            }
+
+
+            field.openCell(x, y);
+            opened_cells++;
+
+            if (opened_cells == 1) {
+                field.setMines(x, y, count_bomb);
+            }
+
+            field.openFreeCells(x, y);
+            isWON(opened_cells);
+            notifyObservers();
         }
-
-        field.openCell(x, y);
-        opened_cells++;
-
-        if (opened_cells == 1){
-            field.setMines(x, y);
-        }
-
-        field.openFreeCells(x, y);
-        isWON(opened_cells);
-        notifyObservers();
     }
 
     public void toggleFlag(int x, int y){
