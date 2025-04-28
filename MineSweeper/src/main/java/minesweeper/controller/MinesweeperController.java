@@ -15,14 +15,10 @@ public class MinesweeperController {
     private final Scanner scanner = new Scanner(System.in);
     private final CommandParser parser;
 
-    public MinesweeperController(String[] args){
+    public MinesweeperController(MinesweeperView view, MinesweeperModel model){
         this.parser = new CommandParser();
-        this.model = new MinesweeperModel();
-        if (args[0].equals("text")){
-            this.view = new ConsoleView();
-        }else{
-            this.view = new GuiView();
-        }
+        this.model = model;
+        this.view = view;
         model.addObserver(view);
     }
 
@@ -50,7 +46,12 @@ public class MinesweeperController {
         while (true){
             switch (model.getGameState()){
                 case PLAYING:
-                    handlePlayingState();
+                    try {
+                        handlePlayingState();
+                        break;
+                    }catch (Exception e){
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case WON:
                     handleWonState();

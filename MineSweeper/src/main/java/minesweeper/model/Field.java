@@ -33,8 +33,26 @@ public class Field {
             return cells[x][y];
         }
         else{
-            throw new IllegalArgumentException("Недопустимые координаты");
+            throw new IllegalArgumentException("Недопустимые координаты x y");
         }
+    }
+
+     public void openCell(int x, int y){
+        //сделать переменную для хранения открытых клеток и если == клеткам - мины то выйграл
+        getCell(x, y).setOpen(true);
+    }
+
+    public void toggleFlag(int x, int y){
+        Cell cell = getCell(x, y);
+        cell.setFlag(!cell.isFlag());
+    }
+
+    public void setMines(int x, int y){
+
+    }
+
+    public void openFreeCells(int x, int y){
+
     }
 
     public boolean isCellOpen(int x, int y){
@@ -43,15 +61,6 @@ public class Field {
 
     public boolean isCellFlag(int x, int y){
         return getCell(x, y).isFlag();
-    }
-
-    public void openCell(int x, int y){
-        getCell(x, y).setOpen(true);
-    }
-
-    public void toggleFlag(int x, int y){
-        Cell cell = getCell(x, y);
-        cell.setFlag(!cell.isFlag());
     }
 
     public boolean isCellMine(int x, int y){

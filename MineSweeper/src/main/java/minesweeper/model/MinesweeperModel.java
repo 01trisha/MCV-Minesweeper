@@ -13,6 +13,7 @@ public class MinesweeperModel implements Observable {
     private Field field;
     private GameState gameState;
     private int count_bomb;
+    private int opened_cells;
 
 
     public MinesweeperModel(){
@@ -23,23 +24,34 @@ public class MinesweeperModel implements Observable {
         this.gameState = GameState.PLAYING;
         this.field = new Field(height, width);
         this.count_bomb = bomb;
+        this.opened_cells = 0;
 
         notifyObservers();
     }
 
     public void openCell(int x, int y){
 
-        //добавить обработку корректных координат
-        if (field.getCell(x, y).isMine()){
+        if (field.isCellOpen(x, y)) {
+            return;
+        }
+
+        if (field.isCellMine(x, y)){
             setGameState(GameState.LOST);
         }
 
         field.openCell(x, y);
+        opened_cells++;
+
+        if (opened_cells == 1){
+            field.setMines(x, y);
+        }
+
+        field.openFreeCells(x, y);
+        isWON(opened_cells);
         notifyObservers();
     }
 
     public void toggleFlag(int x, int y){
-        //добавить так же обработку
         field.toggleFlag(x, y);
         notifyObservers();
     }
@@ -60,7 +72,11 @@ public class MinesweeperModel implements Observable {
         System.exit(0);
     }
 
-
+    public void isWON(int count){
+        if (count == field.getHeight() * field.getWidth() - count_bomb){
+            setGameState(GameState.WON);
+        }
+    }
 
     @Override
     public void addObserver(Observer o) {

@@ -34,36 +34,9 @@ public class ConsoleView implements MinesweeperView {
         displayGame();
     }
 
-//    @Override
-//    public void printField(){
-//        for(int i = 0; i < field.getWidth(); i++){
-//            System.out.print("  " + i);
-//        }
-//        System.out.println();
-//        for(int i = 0; i < field.getHeight(); i++){
-//            System.out.print(i + " ");
-//            for(int j = 0; j < field.getWidth(); j++){
-////                System.out.print(j);
-//                if (field.isCellOpen(i, j)){
-//                    System.out.print(field.getCell(i, j).getSym() + "   ");
-//                }else if(field.isCellFlag(i, j)){
-//                    System.out.print("F   ");
-//                }else{
-//                    System.out.print("*   ");
-//                }
-////                System.out.print("* ");
-//
-//            }
-//            System.out.println();
-//        }
-//    }
-
 @Override
 public void printField() {
-    // Определяем максимальную ширину ячейки
-    int maxCellWidth = 4; // минимальная ширина (для "*", "F" и однозначных чисел)
-
-
+    int maxCellWidth = 4;
 
     // Вывод заголовков столбцов
     System.out.print("   "); // отступ для строк с номерами
