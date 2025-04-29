@@ -50,7 +50,9 @@ public void printField() {
         System.out.printf("%-2d ", i); // номера строк
         for (int j = 0; j < field.getWidth(); j++) {
             String cell;
-            if (field.isCellOpen(i, j)) {
+            if(field.isCellOpen(i, j) && field.getCell(i,j).getSym() == '0'){
+                cell = " ";
+            }else if (field.isCellOpen(i, j)) {
                 cell = String.valueOf(field.getCell(i, j).getSym());
             } else if (field.isCellFlag(i, j)) {
                 cell = "F";
@@ -78,6 +80,7 @@ public void printField() {
     }
     @Override
     public void printLostMessage(){
+        printField();
         System.out.println("""
                 Вы проиграли :(
                 Выберите дальнейшее действие:

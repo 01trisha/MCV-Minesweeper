@@ -1,5 +1,7 @@
 package minesweeper.model;
 
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 
 public class Field {
@@ -42,6 +44,7 @@ public class Field {
      public void openCell(int x, int y){
         //сделать переменную для хранения открытых клеток и если == клеткам - мины то выйграл
         getCell(x, y).setOpen(true);
+
     }
 
     public void toggleFlag(int x, int y){
@@ -57,8 +60,18 @@ public class Field {
             int randX = random.nextInt(height);
             int randY = random.nextInt(width);
 
-            if ((randX == x && randY == y) || cells[randX][randY].isMine()){
+            if (cells[randX][randY].isMine()){
                 continue;
+            }
+
+            if (height > 3 && width > 3 && height * width - mines > 9){
+                if (Math.abs(randX - x) <= 1 && Math.abs(randY - y) <= 1) {
+                    continue;
+                }
+            } else {
+                if (randX == x && randY == y){
+                    continue;
+                }
             }
 
             cells[randX][randY].setSym('M');
@@ -66,8 +79,65 @@ public class Field {
         }
     }
 
-    public void openFreeCells(int x, int y){
 
+    public void updateCharCells(){
+        for (int x = 0; x < height; x++){
+            for(int y = 0; y < width; y++){
+                if (!cells[x][y].isMine()){
+                    char neighbor_count = calcOfNeighborCells(x, y);
+                    cells[x][y].setSym(neighbor_count);
+                }
+            }
+        }
+    }
+
+    public char calcOfNeighborCells(int x, int y){
+        char count = '0';
+        for(int i = x - 1; i <= x + 1; i++){
+            for (int j = y - 1; j <= y+1; j++){
+                if (isValidPosition(i, j) && !(i == x && j == y)){
+                    if (isCellMine(i, j)){
+                        count++;
+                    }
+                }
+            }
+        }
+
+        return count;
+    }
+
+    public boolean isValidPosition(int x, int y){
+        if (x >= 0 && x < height && y >= 0 && y < height){
+            return true;
+        }
+        return false;
+    }
+
+    public void openFreeCells(int x, int y) {
+        if (!isValidPosition(x, y) || isCellFlag(x, y) || isCellMine(x, y)) {
+            return;
+        }
+
+        openCell(x, y);
+
+        if (cells[x][y].getSym() == '0') {
+            for (int i = x - 1; i <= x + 1; i++) {
+                for (int j = y - 1; j <= y + 1; j++) {
+
+                    if ((i == x && j == y) || !isValidPosition(i, j)){
+                        continue;
+                    }
+
+                    if (!isCellOpen(i, j) && !isCellFlag(i, j) && !isCellMine(i, j)) {
+                        openCell(i, j);
+
+                        if (cells[i][j].getSym() == '0') {
+                            openFreeCells(i, j);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public boolean isCellOpen(int x, int y){

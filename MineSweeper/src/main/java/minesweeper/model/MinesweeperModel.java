@@ -39,7 +39,7 @@ public class MinesweeperModel implements Observable {
 
     public void openCell(int x, int y){
         if (field.isCellMine(x, y)){
-            setGameState(GameState.LOST);
+            gameState = GameState.LOST;
         }else {
             if (field.isCellOpen(x, y)) {
                 return;
@@ -51,12 +51,13 @@ public class MinesweeperModel implements Observable {
 
             if (opened_cells == 1) {
                 field.setMines(x, y, count_bomb);
+                field.updateCharCells();
             }
 
             field.openFreeCells(x, y);
-            isWON(opened_cells);
-            notifyObservers();
+            isWON();
         }
+        notifyObservers();
     }
 
     public void toggleFlag(int x, int y){
@@ -80,9 +81,18 @@ public class MinesweeperModel implements Observable {
         System.exit(0);
     }
 
-    public void isWON(int count){
+    public void isWON(){
+        int count = 0;
+        for (int x = 0; x < field.getHeight(); x++){
+            for (int y = 0; y < field.getWidth(); y++){
+                if (field.getCell(x, y).isOpen()){
+                    count++;
+                }
+            }
+        }
+
         if (count == field.getHeight() * field.getWidth() - count_bomb){
-            setGameState(GameState.WON);
+            gameState = GameState.WON;
         }
     }
 

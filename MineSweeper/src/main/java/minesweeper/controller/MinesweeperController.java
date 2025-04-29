@@ -124,14 +124,18 @@ public class MinesweeperController {
     }
 
     public int[] getParameters(){
+        try {
+            int[] parameters = new int[3];
+            view.showMessage("Введите высоту поля: ");
+            parameters[0] = scanner.nextInt();
+            view.showMessage("Введите ширину поля: ");
+            parameters[1] = scanner.nextInt();
+            view.showMessage("Введите количество бомб: ");
+            parameters[2] = scanner.nextInt();
 
-        int[] parameters = new int[3];
-        view.showMessage("Введите высоту поля: ");
-        parameters[0] = scanner.nextInt();
-        view.showMessage("Введите ширину поля: ");
-        parameters[1] = scanner.nextInt();
-        view.showMessage("Введите количество бомб: ");
-        parameters[2] = scanner.nextInt();
-        return parameters;
+            return parameters;
+        }catch (Exception e){
+            throw new IllegalArgumentException("Параметры должны числами быть больше 0. Введите еще раз");
+        }
     }
 }
