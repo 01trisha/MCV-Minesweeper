@@ -41,7 +41,7 @@ public class MinesweeperModel implements Observable {
         if (field.isCellMine(x, y)){
             gameState = GameState.LOST;
         }else {
-            if (field.isCellOpen(x, y)) {
+            if (field.isCellOpen(x, y) || field.isCellFlag(x, y)) {
                 return;
             }
 

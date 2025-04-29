@@ -1,0 +1,47 @@
+[
+  {
+    "id": "TASK_1",
+    "priority": "MEDIUM",
+    "tags": [
+      "model"
+    ],
+    "description": "сделать таймер через отдельный поток\n",
+    "status": "TODO"
+  },
+  {
+    "id": "TASK_2",
+    "priority": "MEDIUM",
+    "tags": [
+      "model"
+    ],
+    "description": "сделать сохранение результатов и их вывод",
+    "status": "TODO"
+  },
+  {
+    "id": "TASK_3",
+    "priority": "HIGH",
+    "tags": [
+      "controller"
+    ],
+    "description": "найти как сделать общий интерфейс и переделать для любой реализации вью",
+    "status": "TODO"
+  },
+  {
+    "id": "TASK_4",
+    "priority": "HIGH",
+    "tags": [
+      "controller"
+    ],
+    "description": "сделай как то общий инпут класс который передает все в контроллер (инпут класс контроллера)",
+    "status": "TODO"
+  },
+  {
+    "id": "TASK_5",
+    "priority": "HIGH",
+    "tags": [
+      "view gui"
+    ],
+    "description": "gui swing view",
+    "status": "TODO"
+  }
+]
