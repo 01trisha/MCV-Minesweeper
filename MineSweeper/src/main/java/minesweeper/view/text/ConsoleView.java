@@ -34,36 +34,60 @@ public class ConsoleView implements MinesweeperView {
         displayGame();
     }
 
-@Override
-public void printField() {
-    int maxCellWidth = 4;
+    @Override
+    public void printField() {
+        int maxCellWidth = 4;
 
-    // Вывод заголовков столбцов
-    System.out.print("   "); // отступ для строк с номерами
-    for (int i = 0; i < field.getWidth(); i++) {
-        System.out.printf("%-" + maxCellWidth + "d", i);
-    }
-    System.out.println();
-
-    // Вывод поля
-    for (int i = 0; i < field.getHeight(); i++) {
-        System.out.printf("%-2d ", i); // номера строк
-        for (int j = 0; j < field.getWidth(); j++) {
-            String cell;
-            if(field.isCellOpen(i, j) && field.getCell(i,j).getSym() == '0'){
-                cell = " ";
-            }else if (field.isCellOpen(i, j)) {
-                cell = String.valueOf(field.getCell(i, j).getSym());
-            } else if (field.isCellFlag(i, j)) {
-                cell = "F";
-            } else {
-                cell = "*";
-            }
-            System.out.printf("%-" + maxCellWidth + "s", cell);
+        // Вывод заголовков столбцов
+        System.out.print("   "); // отступ для строк с номерами
+        for (int i = 0; i < field.getWidth(); i++) {
+            System.out.printf("%-" + maxCellWidth + "d", i);
         }
         System.out.println();
+
+            // Вывод поля
+        for (int i = 0; i < field.getHeight(); i++) {
+            System.out.printf("%-2d ", i); // номера строк
+            for (int j = 0; j < field.getWidth(); j++) {
+                String cell;
+                if(field.isCellOpen(i, j) && field.getCell(i,j).getSym() == '0'){
+                    cell = " ";
+                }else if (field.isCellOpen(i, j)) {
+                    cell = String.valueOf(field.getCell(i, j).getSym());
+                } else if (field.isCellFlag(i, j)) {
+                    cell = "F";
+                } else {
+                    cell = "*";
+                }
+                System.out.printf("%-" + maxCellWidth + "s", cell);
+            }
+            System.out.println();
+        }
     }
-}
+
+    public void printOpenedField(){
+        int maxCellWidth = 4;
+
+        // Вывод заголовков столбцов
+        System.out.print("   "); // отступ для строк с номерами
+        for (int i = 0; i < field.getWidth(); i++) {
+            System.out.printf("%-" + maxCellWidth + "d", i);
+        }
+        System.out.println();
+
+        // Вывод поля
+        for (int i = 0; i < field.getHeight(); i++) {
+            System.out.printf("%-2d ", i); // номера строк
+            for (int j = 0; j < field.getWidth(); j++) {
+                String cell;
+                cell = String.valueOf(field.getCell(i, j).getSym());
+                System.out.printf("%-" + maxCellWidth + "s", cell);
+            }
+            System.out.println();
+        }
+    }
+
+
     @Override
     public void printStartMessage(){
         System.out.println("""
@@ -80,7 +104,7 @@ public void printField() {
     }
     @Override
     public void printLostMessage(){
-        printField();
+        printOpenedField();
         System.out.println("""
                 Вы проиграли :(
                 Выберите дальнейшее действие:
@@ -89,6 +113,7 @@ public void printField() {
                 """);
     }
     private void printWonMessage(){
+        printOpenedField();
         System.out.println("""
                 Вы выйграли!
                 Выберите дальнейшее действие:
