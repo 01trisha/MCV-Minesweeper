@@ -50,6 +50,7 @@ public class MinesweeperModel implements Observable {
     public void openCell(int x, int y){
         if (field.isCellMine(x, y)){
             gameState = GameState.LOST;
+            timer.stop();
         }else {
             if (field.isCellOpen(x, y) || field.isCellFlag(x, y)) {
                 return;
@@ -91,6 +92,7 @@ public class MinesweeperModel implements Observable {
 
     public void endGame(){
         gameState = GameState.EXIT;
+        timer.stop();
         System.exit(0);
     }
 
@@ -106,6 +108,7 @@ public class MinesweeperModel implements Observable {
 
         if (count == field.getHeight() * field.getWidth() - count_bomb){
             gameState = GameState.WON;
+            timer.stop();
         }
     }
 

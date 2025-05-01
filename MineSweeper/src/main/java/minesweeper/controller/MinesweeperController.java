@@ -40,7 +40,8 @@ public class MinesweeperController {
     }
 
     public RecordManager getRecordManager(){
-        return model.getRecordManager();
+        RecordManager recordManager = model.getRecordManager();
+        return recordManager;
     }
 
 }

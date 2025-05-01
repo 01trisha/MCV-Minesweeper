@@ -1,10 +1,7 @@
-//import minesweeper.controller.MinesweeperController;
 import minesweeper.controller.MinesweeperController;
 import minesweeper.model.MinesweeperModel;
-import minesweeper.record.RecordManager;
 import minesweeper.view.MinesweeperView;
 //import minesweeper.view.gui.GuiView;
-//import minesweeper.view.text.ConsoleView;
 import minesweeper.view.text.ConsoleView;
 
 public class Minesweeper {
