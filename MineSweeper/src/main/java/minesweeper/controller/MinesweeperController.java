@@ -1,167 +1,34 @@
 package minesweeper.controller;
 
-import minesweeper.CommandParser.CommandParser;
 import minesweeper.model.GameDifficult;
-import minesweeper.model.GameState;
 import minesweeper.model.MinesweeperModel;
 import minesweeper.view.MinesweeperView;
-import minesweeper.view.gui.GuiView;
-import minesweeper.view.text.ConsoleView;
-
-import java.util.Scanner;
 
 public class MinesweeperController {
     private final MinesweeperModel model;
     private final MinesweeperView view;
-    private final Scanner scanner = new Scanner(System.in);
-    private final CommandParser parser;
 
-    public MinesweeperController(MinesweeperView view, MinesweeperModel model){
-        this.parser = new CommandParser();
+    public MinesweeperController(MinesweeperModel model, MinesweeperView view) {
         this.model = model;
         this.view = view;
         model.addObserver(view);
     }
 
-
-    public void startGame(){
-        view.printStartMessage();
-        String input = scanner.nextLine();
-
-        switch (input.trim()) {
-            case "1":
-                selectDifficult();
-                break;
-            case "0":
-                model.endGame();
-                break;
-        }
-
-    }
-
-    public void selectDifficult(){
-        view.printDifficult();
-        String choice = scanner.nextLine();
-
-        switch (choice){
-            case "1":
-                newGame(GameDifficult.EASY);
-                break;
-            case "2":
-                newGame(GameDifficult.MEDIUM);
-                break;
-            case "3":
-                newGame(GameDifficult.HARD);
-                break;
-            case "4":
-                while (true) {
-                    try {
-                        int[] param = getParameters();
-                        scanner.nextLine();
-                        GameDifficult.CUSTOM.setCustomParameters(param[0], param[1], param[2]);
-                        newGame(GameDifficult.CUSTOM);
-                        break;
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-//                        scanner.nextLine();
-                    }
-                }
-            default:
-                view.showMessage("Нет такой сложности, выберите еще раз:");
-                selectDifficult();
-        }
-    }
-
-    public void newGame(GameDifficult difficult){
+    public void startGame(GameDifficult difficult){
         model.newGame(difficult.getHeight(), difficult.getWidth(), difficult.getBomb(), difficult);
-        while (true){
-            switch (model.getGameState()){
-                case PLAYING:
-                    try {
-                        handlePlayingState();
-                        break;
-                    }catch (Exception e){
-                        System.out.println(e.getMessage());
-                    }
-                    break;
-                case WON:
-                    handleWonState();
-                    break;
-                case LOST:
-                    handleLostState();
-                    break;
-                case EXIT:
-                    model.endGame();
-                    return;
-            }
-        }
-
     }
 
-    private void handlePlayingState(){
-        view.showMessage("""
-                            Введите действие:
-                            open x y - открыть клетку x y
-                            flag x y - поставить флаг на клетку x y
-                            exit - выйти из игры
-                            """);
-        String input = scanner.nextLine();
-        String[] command = parser.parse(input);
-
-        if (command[0].equals("open") && command.length == 3) {
-            model.openCell(Integer.parseInt(command[1]), Integer.parseInt(command[2]));
-        } else if(command[0].equals("exit")) {
-            model.setGameState(GameState.EXIT);
-        }else if (command[0].equals("flag") && command.length == 3) {
-            model.toggleFlag(Integer.parseInt(command[1]), Integer.parseInt(command[2]));
-        } else if (command[0].equals("")) {
-        } else {
-            System.out.println("Unknown command");
-        }
-//        model.setGameState(GameState.LOST);
+    public void selectExitCommand(){
+        model.endGame();
     }
 
-    private void handleWonState(){
-        int command = scanner.nextInt();
-
-        if (command == 1) {
-            scanner.nextLine();
-            selectDifficult();
-        }else if (command == 0) {
-            model.setGameState(GameState.EXIT);
-        }else if (command == 2){
-
-        }else{
-            System.out.println("Unknown command");
-        }
+    public void selectOpenCellCommand(int x, int y){
+        model.openCell(x, y);
     }
 
-    private void handleLostState(){
-        int command = scanner.nextInt();
-
-        if (command == 1) {
-            scanner.nextLine();
-            selectDifficult();
-        }else if (command == 0){
-            model.setGameState(GameState.EXIT);
-        }else{
-            System.out.println("Unknown command");
-        }
+    public void selectToggleFlagCommand(int x, int y){
+        model.toggleFlag(x, y);
     }
 
-    public int[] getParameters(){
-        try {
-            int[] parameters = new int[3];
-            view.showMessage("Введите высоту поля: ");
-            parameters[0] = scanner.nextInt();
-            view.showMessage("Введите ширину поля: ");
-            parameters[1] = scanner.nextInt();
-            view.showMessage("Введите количество бомб: ");
-            parameters[2] = scanner.nextInt();
 
-            return parameters;
-        }catch (Exception e){
-            throw new IllegalArgumentException("Параметры должны числами быть больше 0. Введите еще раз");
-        }
-    }
 }

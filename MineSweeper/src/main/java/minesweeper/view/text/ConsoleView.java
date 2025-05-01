@@ -1,7 +1,9 @@
 package minesweeper.view.text;
 
+import minesweeper.CommandParser.CommandParser;
 import minesweeper.controller.MinesweeperController;
 import minesweeper.model.Field;
+import minesweeper.model.GameDifficult;
 import minesweeper.model.GameState;
 import minesweeper.observ.Context;
 import minesweeper.view.MinesweeperView;
@@ -12,20 +14,84 @@ public class ConsoleView implements MinesweeperView {
     private Field field;
     private GameState gameState;
     private int time;
-
+    private MinesweeperController controller;
+    private final Scanner scanner = new Scanner(System.in);
+    private final CommandParser parser = new CommandParser();
 
     @Override
-    public void displayGame() {
-        switch (gameState){
-            case PLAYING:
-                printField();
+    public void setController(MinesweeperController controller) {
+        this.controller = controller;
+    }
+
+    @Override
+    public void start() {
+        printStartMessage();
+
+        while (true) {
+            String input = scanner.nextLine();
+
+            switch (input.trim()) {
+                case "1":
+                    printDifficult();
+                    break;
+                case "0":
+                    controller.selectExitCommand();
+                    return;
+                default:
+                    System.out.println("Неизвестная команда");
+            }
+        }
+    }
+
+    public void printStartMessage() {
+        System.out.println("""
+                Minesweeper by trisha:
+                Выберите пожалуйста команду:
+                1 - Новая игра
+                2 - Таблица рекордов
+                0 - Выйти
+                """);
+    }
+
+    public void printDifficult() {
+        System.out.println("""
+                Пожалуйста, выберите сложность:
+                1 - EASY(9x9, 10 mines)
+                2 - MEDIUM(9x9, 30 mines)
+                3 - HARD(9x9, 50 mines)
+                4 - CUSTOM(your parameters)
+                """);
+
+        selectDifficult();
+    }
+
+    public void selectDifficult(){
+        String choice = scanner.nextLine();
+
+        switch (choice){
+            case "1":
+                controller.startGame(GameDifficult.EASY);
                 break;
-            case LOST:
-                printLostMessage();
+            case "2":
+                controller.startGame(GameDifficult.MEDIUM);
                 break;
-            case WON:
-                printWonMessage();
+            case "3":
+                controller.startGame(GameDifficult.HARD);
                 break;
+            case "4":
+                while (true) {
+                    try {
+                        int[] param = getParameters();
+                        GameDifficult.CUSTOM.setCustomParameters(param[0], param[1], param[2]);
+                        controller.startGame(GameDifficult.CUSTOM);
+                        break;
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+            default:
+                System.out.println("Нет такой сложности, выберите еще раз:");
+                selectDifficult();
         }
     }
 
@@ -39,8 +105,26 @@ public class ConsoleView implements MinesweeperView {
         }
     }
 
-    @Override
-    public void printField() {
+    public void displayGame() {
+        switch (gameState) {
+            case PLAYING:
+                printPlayingMessage();
+                break;
+            case LOST:
+                printLostMessage();
+                break;
+            case WON:
+                printWonMessage();
+                break;
+            case EXIT:
+                controller.selectExitCommand();
+                return;
+        }
+
+        getNextCommand(gameState);
+    }
+
+    public void printPlayingMessage() {
         int maxCellWidth = 4;
 
         // Вывод заголовков столбцов
@@ -50,7 +134,7 @@ public class ConsoleView implements MinesweeperView {
         }
         System.out.println();
 
-            // Вывод поля
+        // Вывод поля
         for (int i = 0; i < field.getHeight(); i++) {
             System.out.printf("%-2d ", i); // номера строк
             for (int j = 0; j < field.getWidth(); j++) {
@@ -67,7 +151,44 @@ public class ConsoleView implements MinesweeperView {
                 System.out.printf("%-" + maxCellWidth + "s", cell);
             }
             System.out.println();
+
         }
+        System.out.println("""
+                Введите действие:
+                open x y - открыть клетку x y
+                flag x y - поставить флаг на клетку x y
+                exit - выйти из игры
+                """);
+
+    }
+
+    public void printLostMessage() {
+        printOpenedField();
+        printTime();
+        System.out.println("""
+                Вы проиграли :(
+                Выберите команду для продолжения:
+                1 - Новая игра
+                0 - Выйти
+                """);
+
+    }
+
+    public void printWonMessage(){
+        printOpenedField();
+        printTime();
+        System.out.println("""
+                Вы выиграли!
+                Выберите команду для продолжения:
+                1 - Новая игра
+                2 - Сохранить результат
+                0 - Выйти
+                """);
+
+    }
+
+    public void printTime(){
+        System.out.printf("Ваше время игры: %d sec\n", time);
     }
 
     public void printOpenedField(){
@@ -92,61 +213,107 @@ public class ConsoleView implements MinesweeperView {
         }
     }
 
-
-    @Override
-    public void printStartMessage(){
-        System.out.println("""
-                Minesweeper by trisha:
-                Выберите пожалуйста команду:
-                1 - Новая игра
-                2 - Таблица рекордов
-                0 - Выйти
-                """);
-    }
-    @Override
-    public void printEndMessage(){
-
-    }
-    @Override
-    public void printLostMessage(){
-        printOpenedField();
-        printTime();
-        System.out.println("""
-                Вы проиграли :(
-                Выберите дальнейшее действие:
-                1 - Новая игра
-                0 - Выйти
-                """);
-    }
-    private void printWonMessage(){
-        printOpenedField();
-        printTime();
-        System.out.println("""
-                Вы выйграли!
-                Выберите дальнейшее действие:
-                1 - Новая игра
-                2 - Сохранить результат
-                0 - Выйти
-                """);
+    public void getNextCommand(GameState gameState) {
+        switch (gameState) {
+            case PLAYING:
+                handlePlayingState();
+                break;
+            case WON:
+                handleWonState();
+                break;
+            case LOST:
+                handleLostState();
+                break;
+            case EXIT:
+                controller.selectExitCommand();
+                break;
+        }
     }
 
-    public void showMessage(String str){
-        System.out.println(str);
+    private void handlePlayingState(){
+        while (true) {
+            try {
+                String input = scanner.nextLine().trim();
+                String[] command = parser.parse(input);
+
+                if (command[0].equals("open") && command.length == 3) {
+                    controller.selectOpenCellCommand(Integer.parseInt(command[1]), Integer.parseInt(command[2]));
+                    return;
+                } else if (command[0].equals("exit")) {
+                    controller.selectExitCommand();
+                    return;
+                } else if (command[0].equals("flag") && command.length == 3) {
+                    controller.selectToggleFlagCommand(Integer.parseInt(command[1]), Integer.parseInt(command[2]));
+                    return;
+                } else if (command[0].equals("")) {
+                } else {
+                    System.out.println("Неизвестная команда. Введите еще раз");
+                }
+            }catch (NumberFormatException e){
+                System.out.println("Координаты должны быть числами. Введите еще раз");
+            }catch (Exception e){
+                System.out.println("Ошибки: " + e.getMessage());
+            }
+        }
     }
 
-    public void printTime(){
-       System.out.printf("Ваше время игры: %d sec\n", time);
+    private void handleWonState() {
+        while (true) {
+            String command = scanner.nextLine().trim();
+
+            switch (command) {
+                case "1":
+                    printDifficult();
+                    return;
+                case "0":
+                    controller.selectExitCommand();
+                    return;
+                default:
+                    System.out.println("Неизвестная команда, выберите еще раз)");
+            }
+        }
+
+
     }
 
-    @Override
-    public void printDifficult(){
-        System.out.println("""
-                Пожалуйста, выберите сложность:
-                1 - EASY(9x9, 10 mines)
-                2 - MEDIUM(9x9, 30 mines)
-                3 - HARD(9x9, 50 mines)
-                4 - CUSTOM(your parameters)
-                """);
+    private void handleLostState() {
+        while (true){
+            String command = scanner.nextLine().trim();
+
+            switch (command){
+                case "1":
+                    printDifficult();
+                    return;
+                case "0":
+                    controller.selectExitCommand();
+                    return;
+                default:
+                    System.out.println("Неизвестная команда, выберите еще раз");
+            }
+        }
+    }
+
+
+
+
+    public int[] getParameters(){
+        try {
+            int[] parameters = new int[3];
+            System.out.println("Введите высоту поля: ");
+            parameters[0] = Integer.parseInt(scanner.nextLine());
+            System.out.println("Введите ширину поля: ");
+            parameters[1] = Integer.parseInt(scanner.nextLine());
+            System.out.println("Введите количество бомб: ");
+            parameters[2] = Integer.parseInt(scanner.nextLine());
+            for(int i : parameters){
+                if (i < 1){
+                    throw new IllegalArgumentException();
+                }
+            }
+            return parameters;
+        }catch (Exception e){
+            throw new IllegalArgumentException("Параметры должны числами быть больше 0. Введите еще раз");
+        }
     }
 
 }

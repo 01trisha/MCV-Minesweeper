@@ -1,6 +1,5 @@
 package minesweeper.model;
 
-import minesweeper.controller.MinesweeperController;
 import minesweeper.observ.Context;
 import minesweeper.observ.Observable;
 import minesweeper.observ.Observer;
@@ -86,7 +85,7 @@ public class MinesweeperModel implements Observable {
     }
 
     public void endGame(){
-        setGameState(GameState.EXIT);
+        gameState = GameState.EXIT;
         System.exit(0);
     }
 
