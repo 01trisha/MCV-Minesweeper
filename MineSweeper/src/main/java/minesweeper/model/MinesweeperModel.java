@@ -12,11 +12,13 @@ public class MinesweeperModel implements Observable {
     private final List<Observer> observers = new ArrayList<>();
     private Field field;
     private GameState gameState;
+    private final Timer timer;
     private int count_bomb;
     private int opened_cells;
 
 
     public MinesweeperModel(){
+        this.timer = new Timer(this::notifyObservers);
         this.gameState = GameState.CONFIGURING;
     }
 
@@ -32,6 +34,8 @@ public class MinesweeperModel implements Observable {
         this.gameState = GameState.PLAYING;
         this.field = new Field(height, width);
         this.count_bomb = bomb;
+        timer.reset();
+        timer.start();
         this.opened_cells = 0;
 
         notifyObservers();
@@ -68,6 +72,9 @@ public class MinesweeperModel implements Observable {
     public void setGameState(GameState newState){
         if (gameState != newState){
             gameState = newState;
+        }
+        if (gameState != GameState.PLAYING){
+            timer.stop();
         }
         notifyObservers();
     }
@@ -108,7 +115,7 @@ public class MinesweeperModel implements Observable {
 
     @Override
     public void notifyObservers() {
-        Context context = new Context(field, gameState);
+        Context context = new Context(field, gameState, timer.getSeconds());
         for(Observer o : observers){
             o.update(context);
         }

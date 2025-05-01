@@ -1,6 +1,8 @@
 package minesweeper.model;
 
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Timer {
@@ -8,17 +10,27 @@ public class Timer {
     private final Runnable tick;
     private ScheduledExecutorService executor;
 
-    public Timer(AtomicInteger seconds, Runnable tick) {
+    public Timer(Runnable tick) {
         this.seconds = new AtomicInteger(0);
         this.tick = tick;
     }
 
+
     public void start(){
+        if (executor != null && !executor.isShutdown()){
+            return;
+        }
+
+        seconds.set(0);
+        executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleAtFixedRate(() -> {seconds.incrementAndGet(); tick.run();}, 1, 1, TimeUnit.SECONDS);
 
     }
 
     public void stop(){
-
+        if (executor != null){
+            executor.shutdownNow();
+        }
     }
 
     public void reset(){
@@ -27,10 +39,5 @@ public class Timer {
 
     public int getSeconds() {
         return seconds.get();
-    }
-
-    public String getFormatedTime(){
-
-        return "";
     }
 }

@@ -11,6 +11,7 @@ import java.util.Scanner;
 public class ConsoleView implements MinesweeperView {
     private Field field;
     private GameState gameState;
+    private int time;
 
 
     @Override
@@ -24,6 +25,7 @@ public class ConsoleView implements MinesweeperView {
                 break;
             case WON:
                 printWonMessage();
+                break;
         }
     }
 
@@ -31,6 +33,7 @@ public class ConsoleView implements MinesweeperView {
     public void update(Context context) {
         field = context.getField();
         gameState = context.getGameState();
+        time = context.getTime();
         displayGame();
     }
 
@@ -105,6 +108,7 @@ public class ConsoleView implements MinesweeperView {
     @Override
     public void printLostMessage(){
         printOpenedField();
+        printTime();
         System.out.println("""
                 Вы проиграли :(
                 Выберите дальнейшее действие:
@@ -114,6 +118,7 @@ public class ConsoleView implements MinesweeperView {
     }
     private void printWonMessage(){
         printOpenedField();
+        printTime();
         System.out.println("""
                 Вы выйграли!
                 Выберите дальнейшее действие:
@@ -125,6 +130,10 @@ public class ConsoleView implements MinesweeperView {
 
     public void showMessage(String str){
         System.out.print(str);
+    }
+
+    public void printTime(){
+       System.out.printf("Ваше время игры: %d", time);
     }
 
 }
