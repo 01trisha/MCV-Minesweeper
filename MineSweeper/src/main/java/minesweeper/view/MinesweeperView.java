@@ -11,4 +11,5 @@ public interface MinesweeperView extends Observer {
     void printLostMessage();
     void printField();
     void showMessage(String text);
+    void printDifficult();
 }

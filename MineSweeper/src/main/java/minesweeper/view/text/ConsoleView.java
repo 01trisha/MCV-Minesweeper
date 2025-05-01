@@ -31,10 +31,12 @@ public class ConsoleView implements MinesweeperView {
 
     @Override
     public void update(Context context) {
-        field = context.getField();
-        gameState = context.getGameState();
-        time = context.getTime();
-        displayGame();
+        if (!context.getOnlyTimeUpdate()){
+            field = context.getField();
+            gameState = context.getGameState();
+            time = context.getTime();
+            displayGame();
+        }
     }
 
     @Override
@@ -129,11 +131,22 @@ public class ConsoleView implements MinesweeperView {
     }
 
     public void showMessage(String str){
-        System.out.print(str);
+        System.out.println(str);
     }
 
     public void printTime(){
-       System.out.printf("Ваше время игры: %d", time);
+       System.out.printf("Ваше время игры: %d sec\n", time);
+    }
+
+    @Override
+    public void printDifficult(){
+        System.out.println("""
+                Пожалуйста, выберите сложность:
+                1 - EASY(9x9, 10 mines)
+                2 - MEDIUM(9x9, 30 mines)
+                3 - HARD(9x9, 50 mines)
+                4 - CUSTOM(your parameters)
+                """);
     }
 
 }

@@ -15,14 +15,15 @@ public class MinesweeperModel implements Observable {
     private final Timer timer;
     private int count_bomb;
     private int opened_cells;
+    private GameDifficult difficult;
 
 
     public MinesweeperModel(){
-        this.timer = new Timer(this::notifyObservers);
+        this.timer = new Timer(this::notifyTimeUpdater);
         this.gameState = GameState.CONFIGURING;
     }
 
-    public void newGame(int height, int width, int bomb) {
+    public void newGame(int height, int width, int bomb, GameDifficult difficult) {
         if (height <= 0 || width <= 0) {
             throw new IllegalArgumentException("Размер поля должен быть положительным");
         }
@@ -32,6 +33,7 @@ public class MinesweeperModel implements Observable {
         }
 
         this.gameState = GameState.PLAYING;
+        this.difficult = difficult;
         this.field = new Field(height, width);
         this.count_bomb = bomb;
         timer.reset();
@@ -103,6 +105,10 @@ public class MinesweeperModel implements Observable {
         }
     }
 
+    public void saveResult(){
+
+    }
+
     @Override
     public void addObserver(Observer o) {
         observers.add(o);
@@ -113,9 +119,16 @@ public class MinesweeperModel implements Observable {
         observers.remove(0);
     }
 
+    private void notifyTimeUpdater(){
+        Context context = new Context(field, gameState, timer.getSeconds(), true);
+        for(Observer o : observers){
+            o.update(context);
+        }
+    }
+
     @Override
     public void notifyObservers() {
-        Context context = new Context(field, gameState, timer.getSeconds());
+        Context context = new Context(field, gameState, timer.getSeconds(), false);
         for(Observer o : observers){
             o.update(context);
         }

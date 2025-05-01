@@ -7,11 +7,13 @@ public class Context {
     private final Field field;
     private final GameState gameState;
     private final int time;
+    private final boolean isOnlyTimeUpdate;
 
-    public Context(Field field, GameState gameState, int time) {
+    public Context(Field field, GameState gameState, int time, boolean isRunning) {
         this.field = field;
         this.gameState = gameState;
         this.time = time;
+        this.isOnlyTimeUpdate = isRunning;
     }
 
     public Field getField(){
@@ -24,5 +26,9 @@ public class Context {
 
     public int getTime(){
         return time;
+    }
+
+    public boolean getOnlyTimeUpdate(){
+        return isOnlyTimeUpdate;
     }
 }

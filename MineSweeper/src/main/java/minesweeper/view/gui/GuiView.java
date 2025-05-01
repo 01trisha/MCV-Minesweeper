@@ -41,4 +41,9 @@ public class GuiView implements MinesweeperView {
 
     }
 
+    @Override
+    public void printDifficult() {
+
+    }
+
 }

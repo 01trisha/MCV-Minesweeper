@@ -9,6 +9,7 @@ public class Timer {
     private final AtomicInteger seconds;
     private final Runnable tick;
     private ScheduledExecutorService executor;
+    private volatile boolean isRunning;
 
     public Timer(Runnable tick) {
         this.seconds = new AtomicInteger(0);
@@ -21,6 +22,7 @@ public class Timer {
             return;
         }
 
+        isRunning = true;
         seconds.set(0);
         executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(() -> {seconds.incrementAndGet(); tick.run();}, 1, 1, TimeUnit.SECONDS);
@@ -28,6 +30,7 @@ public class Timer {
     }
 
     public void stop(){
+        isRunning = false;
         if (executor != null){
             executor.shutdownNow();
         }

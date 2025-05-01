@@ -1,6 +1,7 @@
 package minesweeper.controller;
 
 import minesweeper.CommandParser.CommandParser;
+import minesweeper.model.GameDifficult;
 import minesweeper.model.GameState;
 import minesweeper.model.MinesweeperModel;
 import minesweeper.view.MinesweeperView;
@@ -29,7 +30,7 @@ public class MinesweeperController {
 
         switch (input.trim()) {
             case "1":
-                newGame();
+                selectDifficult();
                 break;
             case "0":
                 model.endGame();
@@ -38,18 +39,41 @@ public class MinesweeperController {
 
     }
 
-    public void newGame(){
-        while (true) {
-            try {
-                int[] param = getParameters();
-                model.newGame(param[0], param[1], param[2]);
-                scanner.nextLine();
+    public void selectDifficult(){
+        view.printDifficult();
+        String choice = scanner.nextLine();
+
+        switch (choice){
+            case "1":
+                newGame(GameDifficult.EASY);
                 break;
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                scanner.nextLine();
-            }
+            case "2":
+                newGame(GameDifficult.MEDIUM);
+                break;
+            case "3":
+                newGame(GameDifficult.HARD);
+                break;
+            case "4":
+                while (true) {
+                    try {
+                        int[] param = getParameters();
+                        scanner.nextLine();
+                        GameDifficult.CUSTOM.setCustomParameters(param[0], param[1], param[2]);
+                        newGame(GameDifficult.CUSTOM);
+                        break;
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+//                        scanner.nextLine();
+                    }
+                }
+            default:
+                view.showMessage("Нет такой сложности, выберите еще раз:");
+                selectDifficult();
         }
+    }
+
+    public void newGame(GameDifficult difficult){
+        model.newGame(difficult.getHeight(), difficult.getWidth(), difficult.getBomb(), difficult);
         while (true){
             switch (model.getGameState()){
                 case PLAYING:
@@ -101,7 +125,8 @@ public class MinesweeperController {
         int command = scanner.nextInt();
 
         if (command == 1) {
-           newGame();
+            scanner.nextLine();
+            selectDifficult();
         }else if (command == 0) {
             model.setGameState(GameState.EXIT);
         }else if (command == 2){
@@ -115,7 +140,8 @@ public class MinesweeperController {
         int command = scanner.nextInt();
 
         if (command == 1) {
-            newGame();
+            scanner.nextLine();
+            selectDifficult();
         }else if (command == 0){
             model.setGameState(GameState.EXIT);
         }else{
