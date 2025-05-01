@@ -2,6 +2,7 @@ package minesweeper.controller;
 
 import minesweeper.model.GameDifficult;
 import minesweeper.model.MinesweeperModel;
+import minesweeper.record.RecordManager;
 import minesweeper.view.MinesweeperView;
 
 public class MinesweeperController {
@@ -30,5 +31,16 @@ public class MinesweeperController {
         model.toggleFlag(x, y);
     }
 
+    public void selectSaveRecords(String name){
+        model.saveResult(name);
+    }
+
+    public void selectClearAllRecords(){
+        model.clearResults();
+    }
+
+    public RecordManager getRecordManager(){
+        return model.getRecordManager();
+    }
 
 }

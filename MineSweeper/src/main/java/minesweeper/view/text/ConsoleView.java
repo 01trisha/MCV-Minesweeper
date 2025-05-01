@@ -6,6 +6,8 @@ import minesweeper.model.Field;
 import minesweeper.model.GameDifficult;
 import minesweeper.model.GameState;
 import minesweeper.observ.Context;
+import minesweeper.record.Record;
+import minesweeper.record.RecordManager;
 import minesweeper.view.MinesweeperView;
 
 import java.util.Scanner;
@@ -17,10 +19,13 @@ public class ConsoleView implements MinesweeperView {
     private MinesweeperController controller;
     private final Scanner scanner = new Scanner(System.in);
     private final CommandParser parser = new CommandParser();
+    private GameDifficult difficult;
+    private RecordManager recordManager;
 
     @Override
     public void setController(MinesweeperController controller) {
         this.controller = controller;
+        this.recordManager = controller.getRecordManager();
     }
 
     @Override
@@ -33,6 +38,9 @@ public class ConsoleView implements MinesweeperView {
             switch (input.trim()) {
                 case "1":
                     printDifficult();
+                    break;
+                case "2":
+                    printResult();
                     break;
                 case "0":
                     controller.selectExitCommand();
@@ -101,6 +109,8 @@ public class ConsoleView implements MinesweeperView {
             field = context.getField();
             gameState = context.getGameState();
             time = context.getTime();
+            recordManager = context.getRecordManager();
+            difficult = context.getDifficult();
             displayGame();
         }
     }
@@ -264,7 +274,17 @@ public class ConsoleView implements MinesweeperView {
             switch (command) {
                 case "1":
                     printDifficult();
-                    return;
+                    break;
+                case "2":
+                    System.out.print("Введите ваше имя: ");
+                    String name = scanner.nextLine();
+                    controller.selectSaveRecords(name);
+                    if (difficult != null){
+                        handleResult(difficult);
+                    }else {
+                        printResult();
+                    }
+                    break;
                 case "0":
                     controller.selectExitCommand();
                     return;
@@ -293,6 +313,70 @@ public class ConsoleView implements MinesweeperView {
         }
     }
 
+
+    private void printResult(){
+        System.out.println("""
+                Выберите для какой сложности открыть таблицу рекордов:
+                1 - EASY
+                2 - MEDIUM
+                3 - HARD
+                4 - CUSTOM
+                """);
+        while (true){
+            String command = scanner.nextLine();
+            switch (command){
+                case "1":
+                    handleResult(GameDifficult.EASY);
+                    break;
+                case "2":
+                    handleResult(GameDifficult.MEDIUM);
+                    break;
+                case "3":
+                    handleResult(GameDifficult.HARD);
+                    break;
+                case "4":
+                    handleResult(GameDifficult.CUSTOM);
+                    break;
+                default:
+                    System.out.println("Неизвестная сложность, введите еще раз:");
+            }
+        }
+
+
+    }
+
+    private void handleResult(GameDifficult difficult){
+        System.out.println("Таблица рекордов для выбранной сложности:");
+        for(Record i : recordManager.getRecords(difficult)){
+            System.out.println(i.getName() + ": " + i.getTime() + " sec.");
+        }
+        System.out.println();
+
+        System.out.println("""
+                Выберите следующее действие:
+                1 - Очистить таблицу рекордов
+                2 - Новая игра
+                0 - Выйти
+                """);
+
+        while (true){
+            String command = scanner.nextLine();
+
+            switch (command){
+                case "1":
+                    controller.selectClearAllRecords();
+                    handleResult(difficult);
+                case "2":
+                    printDifficult();
+                    break;
+                case "0":
+                    controller.selectExitCommand();
+                    return;
+                default:
+                    System.out.println("Неизвестная команда, попробуйте еще раз");
+            }
+        }
+    }
 
 
 

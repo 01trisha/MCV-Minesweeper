@@ -3,6 +3,9 @@ package minesweeper.model;
 import minesweeper.observ.Context;
 import minesweeper.observ.Observable;
 import minesweeper.observ.Observer;
+import minesweeper.record.Record;
+import minesweeper.record.RecordManager;
+import minesweeper.record.RecordStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +18,13 @@ public class MinesweeperModel implements Observable {
     private int count_bomb;
     private int opened_cells;
     private GameDifficult difficult;
+    private final RecordManager recordManager;
 
 
     public MinesweeperModel(){
         this.timer = new Timer(this::notifyTimeUpdater);
         this.gameState = GameState.CONFIGURING;
+        this.recordManager = RecordStorage.load();
     }
 
     public void newGame(int height, int width, int bomb, GameDifficult difficult) {
@@ -104,10 +109,19 @@ public class MinesweeperModel implements Observable {
         }
     }
 
-    public void saveResult(){
-
+    public RecordManager getRecordManager() {
+        return recordManager;
     }
 
+    public void saveResult(String name){
+        recordManager.addRecord(difficult, new Record(name, timer.getSeconds()));
+        RecordStorage.save(recordManager);
+    }
+
+    public void clearResults(){
+        recordManager.clearAllRecords();
+        RecordStorage.save(recordManager);
+    }
     @Override
     public void addObserver(Observer o) {
         observers.add(o);
@@ -119,7 +133,7 @@ public class MinesweeperModel implements Observable {
     }
 
     private void notifyTimeUpdater(){
-        Context context = new Context(field, gameState, timer.getSeconds(), true);
+        Context context = new Context(field, gameState, timer.getSeconds(), true, recordManager, difficult);
         for(Observer o : observers){
             o.update(context);
         }
@@ -127,7 +141,7 @@ public class MinesweeperModel implements Observable {
 
     @Override
     public void notifyObservers() {
-        Context context = new Context(field, gameState, timer.getSeconds(), false);
+        Context context = new Context(field, gameState, timer.getSeconds(), false, recordManager, difficult);
         for(Observer o : observers){
             o.update(context);
         }
