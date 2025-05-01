@@ -255,7 +255,8 @@ public class ConsoleView implements MinesweeperView {
                 } else if (command[0].equals("flag") && command.length == 3) {
                     controller.selectToggleFlagCommand(Integer.parseInt(command[1]), Integer.parseInt(command[2]));
                     return;
-                } else if (command[0].equals("")) {
+                } else if (command[0].isEmpty()) {
+                    continue;
                 } else {
                     System.out.println("Неизвестная команда. Введите еще раз");
                 }
@@ -322,7 +323,7 @@ public class ConsoleView implements MinesweeperView {
                 3 - HARD
                 4 - CUSTOM
                 """);
-        while (true){
+        while(true){
             String command = scanner.nextLine();
             switch (command){
                 case "1":
