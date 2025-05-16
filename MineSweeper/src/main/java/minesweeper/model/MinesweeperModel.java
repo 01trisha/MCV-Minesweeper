@@ -44,7 +44,7 @@ public class MinesweeperModel implements Observable {
         this.field = new Field(height, width);
         this.count_bomb = bomb;
         timer.reset();
-        timer.start();
+//        timer.start();
         this.opened_cells = 0;
 
         notifyObservers();
@@ -75,7 +75,7 @@ public class MinesweeperModel implements Observable {
     }
 
     public void openCell(int x, int y){
-        if (field.isCellMine(x, y)){
+        if (field.isCellMine(x, y) && !field.isCellFlag(x, y)){
             field.openAllCells();
             gameState = GameState.LOST;
             timer.stop();
@@ -83,12 +83,11 @@ public class MinesweeperModel implements Observable {
             if (field.isCellOpen(x, y) || field.isCellFlag(x, y)) {
                 return;
             }
-
-
             field.openCell(x, y);
             opened_cells++;
 
             if (opened_cells == 1) {
+                timer.start();
                 field.setMines(x, y, count_bomb);
                 field.updateCharCells();
             }
