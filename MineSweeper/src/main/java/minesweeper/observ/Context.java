@@ -11,6 +11,8 @@ public class Context {
     private final int time;
     private final boolean isOnlyTimeUpdate;
     private final String difficult;
+    private final int height;
+    private final int width;
 
     public Context(Field field, GameState gameState, int time, boolean isRunning, RecordManager recordManager, GameDifficult difficult) {
         this.field = ContextField.rebase(field);
@@ -18,6 +20,8 @@ public class Context {
         this.time = time;
         this.isOnlyTimeUpdate = isRunning;
         this.difficult = difficult.name();
+        this.height = field.getHeight();
+        this.width = field.getWidth();
     }
 
     public String[][] getField(){
@@ -38,5 +42,13 @@ public class Context {
 
     public String getDifficult(){
         return difficult;
+    }
+
+    public int getHeight(){
+        return height;
+    }
+
+    public int getWidth(){
+        return width;
     }
 }

@@ -18,6 +18,8 @@ public class ConsoleView implements MinesweeperView {
     private final CommandParser parser = new CommandParser();
     private String difficult;
     private RecordManager recordManager;
+    private int height;
+    private int width;
 
     @Override
     public void setController(MinesweeperController controller) {
@@ -102,6 +104,8 @@ public class ConsoleView implements MinesweeperView {
             gameState = context.getGameState();
             time = context.getTime();
             difficult = context.getDifficult();
+            height = context.getHeight();
+            width = context.getWidth();
             displayGame();
         }
     }
@@ -130,15 +134,15 @@ public class ConsoleView implements MinesweeperView {
 
         // Вывод заголовков столбцов
         System.out.print("   "); // отступ для строк с номерами
-        for (int i = 0; i < field[0].length; i++) {
+        for (int i = 0; i < width; i++) {
             System.out.printf("%-" + maxCellWidth + "d", i);
         }
         System.out.println();
 
         // Вывод поля
-        for (int i = 0; i < field.length; i++) {
+        for (int i = 0; i < height; i++) {
             System.out.printf("%-2d ", i); // номера строк
-            for (int j = 0; j < field[i].length; j++) {
+            for (int j = 0; j < width; j++) {
                 String cell;
                 if(field[i][j].equals("0")){
                     cell = " ";
@@ -193,15 +197,15 @@ public class ConsoleView implements MinesweeperView {
 
         // Вывод заголовков столбцов
         System.out.print("   "); // отступ для строк с номерами
-        for (int i = 0; i < field[0].length; i++) {
+        for (int i = 0; i < width; i++) {
             System.out.printf("%-" + maxCellWidth + "d", i);
         }
         System.out.println();
 
         // Вывод поля
-        for (int i = 0; i < field.length; i++) {
+        for (int i = 0; i < height; i++) {
             System.out.printf("%-2d ", i); // номера строк
-            for (int j = 0; j < field[i].length; j++) {
+            for (int j = 0; j < width; j++) {
                 String cell;
                 cell = field[i][j];
                 System.out.printf("%-" + maxCellWidth + "s", cell);
