@@ -152,5 +152,14 @@ public class Field {
         return false;
     }
 
+    public void openAllCells(){
+        for(int i = 0; i < height; i++){
+            for(int j = 0; j < width; j++){
+                cells[i][j].setOpen(true);
+                cells[i][j].setFlag(false);
+            }
+        }
+    }
+
 
 }

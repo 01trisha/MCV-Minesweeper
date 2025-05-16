@@ -15,8 +15,12 @@ public class MinesweeperController {
         model.addObserver(view);
     }
 
-    public void startGame(GameDifficult difficult){
-        model.newGame(difficult.getHeight(), difficult.getWidth(), difficult.getBomb(), difficult);
+    public void startGame(String difficult){
+        model.newGame(difficult);
+    }
+
+    public void startGame(int[] param){
+        model.newGame(param);
     }
 
     public void selectExitCommand(){
@@ -40,8 +44,7 @@ public class MinesweeperController {
     }
 
     public RecordManager getRecordManager(){
-        RecordManager recordManager = model.getRecordManager();
-        return recordManager;
+        return model.getRecordManager();
     }
 
 }

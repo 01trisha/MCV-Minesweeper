@@ -6,28 +6,26 @@ import minesweeper.model.GameState;
 import minesweeper.record.RecordManager;
 
 public class Context {
-    private final Field field;
-    private final GameState gameState;
+    private final String[][] field;
+    private final String contextState;
     private final int time;
     private final boolean isOnlyTimeUpdate;
-    private final RecordManager recordManager;
-    private final GameDifficult difficult;
+    private final String difficult;
 
     public Context(Field field, GameState gameState, int time, boolean isRunning, RecordManager recordManager, GameDifficult difficult) {
-        this.field = field;
-        this.gameState = gameState;
+        this.field = ContextField.rebase(field);
+        this.contextState = gameState.name();
         this.time = time;
         this.isOnlyTimeUpdate = isRunning;
-        this.recordManager = recordManager;
-        this.difficult = difficult;
+        this.difficult = difficult.name();
     }
 
-    public Field getField(){
+    public String[][] getField(){
         return field;
     }
 
-    public GameState getGameState(){
-        return gameState;
+    public String getGameState(){
+        return contextState;
     }
 
     public int getTime(){
@@ -38,11 +36,7 @@ public class Context {
         return isOnlyTimeUpdate;
     }
 
-    public RecordManager getRecordManager() {
-        return recordManager;
-    }
-
-    public GameDifficult getDifficult(){
+    public String getDifficult(){
         return difficult;
     }
 }

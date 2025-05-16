@@ -27,7 +27,12 @@ public class MinesweeperModel implements Observable {
         this.recordManager = RecordStorage.load();
     }
 
-    public void newGame(int height, int width, int bomb, GameDifficult difficult) {
+    public void newGame(String dif) {
+        this.difficult = GameDifficult.valueOf(dif);
+        int height = difficult.getHeight();
+        int width = difficult.getWidth();
+        int bomb = difficult.getBomb();
+
         if (height <= 0 || width <= 0) {
             throw new IllegalArgumentException("Размер поля должен быть положительным");
         }
@@ -35,9 +40,31 @@ public class MinesweeperModel implements Observable {
         if (bomb <= 0 || bomb >= height * width) {
             throw new IllegalArgumentException("Количество мин должно быть от 1 до " + (height * width - 1));
         }
-
         this.gameState = GameState.PLAYING;
-        this.difficult = difficult;
+        this.field = new Field(height, width);
+        this.count_bomb = bomb;
+        timer.reset();
+        timer.start();
+        this.opened_cells = 0;
+
+        notifyObservers();
+    }
+
+    public void newGame(int[] param){
+        GameDifficult.CUSTOM.setCustomParameters(param[0], param[1], param[2]);
+        this.difficult = GameDifficult.CUSTOM;
+        int height = difficult.getHeight();
+        int width = difficult.getWidth();
+        int bomb = difficult.getBomb();
+
+        if (height <= 0 || width <= 0) {
+            throw new IllegalArgumentException("Размер поля должен быть положительным");
+        }
+
+        if (bomb <= 0 || bomb >= height * width) {
+            throw new IllegalArgumentException("Количество мин должно быть от 1 до " + (height * width - 1));
+        }
+        this.gameState = GameState.PLAYING;
         this.field = new Field(height, width);
         this.count_bomb = bomb;
         timer.reset();
@@ -49,6 +76,7 @@ public class MinesweeperModel implements Observable {
 
     public void openCell(int x, int y){
         if (field.isCellMine(x, y)){
+            field.openAllCells();
             gameState = GameState.LOST;
             timer.stop();
         }else {
@@ -107,6 +135,7 @@ public class MinesweeperModel implements Observable {
         }
 
         if (count == field.getHeight() * field.getWidth() - count_bomb){
+            field.openAllCells();
             gameState = GameState.WON;
             timer.stop();
         }

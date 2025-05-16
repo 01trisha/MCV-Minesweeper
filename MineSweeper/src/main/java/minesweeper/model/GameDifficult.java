@@ -39,4 +39,5 @@ public enum GameDifficult {
     public int getBomb() {
         return bomb;
     }
+
 }
