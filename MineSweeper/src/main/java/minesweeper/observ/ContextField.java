@@ -3,21 +3,19 @@ package minesweeper.observ;
 import minesweeper.model.Field;
 
 public class ContextField {
-    
-    public static String[][] rebase(Field field){
-        String[][] newField = new String[field.getHeight()][field.getWidth()];
+    private final ContextCell[][] cells;
 
-        for(int i = 0; i < field.getHeight(); i++){
-            for(int j = 0; j < field.getWidth(); j++){
-                if (field.isCellOpen(i, j)){
-                    newField[i][j] = Character.toString(field.getCell(i, j).getSym());
-                }else if(field.isCellFlag(i, j)){
-                    newField[i][j] = "F";
-                }else{
-                    newField[i][j] = "*";
-                }
+    public ContextField(Field field) {
+        this.cells = new ContextCell[field.getHeight()][field.getHeight()];
+        rebase(field);
+    }
+
+    public void rebase(Field field){
+
+        for(int i = 0; i < field.getHeight(); i++) {
+            for (int j = 0; j < field.getWidth(); j++) {
+                cells[i][j] = new ContextCell(field.getCell(i, j));
             }
         }
-        return newField;
     }
 }

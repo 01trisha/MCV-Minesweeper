@@ -6,29 +6,50 @@ import minesweeper.model.GameState;
 import minesweeper.record.RecordManager;
 
 public class Context {
-    private final String[][] field;
-    private final String contextState;
+    private final ContextField field;
+    private final ContextGameState contextState;
     private final int time;
     private final boolean isOnlyTimeUpdate;
-    private final String difficult;
+    private final ContextDifficult difficult;
     private final int height;
     private final int width;
 
     public Context(Field field, GameState gameState, int time, boolean isRunning, RecordManager recordManager, GameDifficult difficult) {
-        this.field = ContextField.rebase(field);
-        this.contextState = gameState.name();
+        this.field = new ContextField(field);
+        this.contextState = rebaseGameState(gameState);
         this.time = time;
         this.isOnlyTimeUpdate = isRunning;
-        this.difficult = difficult.name();
+        this.difficult = rebaseDifficult(difficult);
         this.height = field.getHeight();
         this.width = field.getWidth();
     }
 
-    public String[][] getField(){
+    private static ContextGameState rebaseGameState(GameState gameState){
+        return switch (gameState) {
+            case PLAYING -> ContextGameState.PLAYING;
+            case EXIT -> ContextGameState.EXIT;
+            case CONFIGURING -> ContextGameState.CONFIGURING;
+            case WON -> ContextGameState.WON;
+            case LOST -> ContextGameState.LOST;
+            default -> throw new IllegalArgumentException("Неизвестно состояние игры " + gameState);
+        };
+    }
+
+    private static ContextDifficult rebaseDifficult(GameDifficult difficult){
+        return switch (difficult){
+            case EASY -> ContextDifficult.EASY;
+            case MEDIUM -> ContextDifficult.MEDIUM;
+            case HARD -> ContextDifficult.HARD;
+            case CUSTOM -> ContextDifficult.CUSTOM;
+            default -> throw new IllegalArgumentException("Неизвестная сложность игры " + difficult);
+        };
+    }
+
+    public ContextField getField(){
         return field;
     }
 
-    public String getGameState(){
+    public ContextGameState getGameState(){
         return contextState;
     }
 
@@ -40,7 +61,7 @@ public class Context {
         return isOnlyTimeUpdate;
     }
 
-    public String getDifficult(){
+    public ContextDifficult getDifficult(){
         return difficult;
     }
 
