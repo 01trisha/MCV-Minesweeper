@@ -4,6 +4,7 @@ import minesweeper.controller.MinesweeperController;
 import minesweeper.model.MinesweeperModel;
 import minesweeper.view.MinesweeperView;
 import minesweeper.view.gui.GuiView;
+import minesweeper.view.text.ConsoleView;
 
 public class Minesweeper {
     public static void main(String[] args) {
