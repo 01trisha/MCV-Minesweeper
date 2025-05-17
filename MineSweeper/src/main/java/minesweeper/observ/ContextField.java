@@ -3,6 +3,7 @@ package minesweeper.observ;
 import minesweeper.model.Field;
 
 public class ContextField {
+    
     public static String[][] rebase(Field field){
         String[][] newField = new String[field.getHeight()][field.getWidth()];
 
