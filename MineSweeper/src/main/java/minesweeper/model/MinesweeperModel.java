@@ -27,8 +27,8 @@ public class MinesweeperModel implements Observable {
         this.recordManager = RecordStorage.load();
     }
 
-    public void newGame(String dif) {
-        this.difficult = GameDifficult.valueOf(dif);
+    public void newGame(GameDifficult dif) {
+        this.difficult = dif;
         int height = difficult.getHeight();
         int width = difficult.getWidth();
         int bomb = difficult.getBomb();

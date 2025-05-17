@@ -18,4 +18,8 @@ public class ContextField {
             }
         }
     }
+
+    public ContextCell getCell(int x, int y){
+        return cells[x][y];
+    }
 }

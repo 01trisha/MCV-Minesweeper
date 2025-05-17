@@ -1,8 +1,10 @@
 package minesweeper.view.text;
 
-import minesweeper.CommandParser.CommandParser;
+import minesweeper.Parser.CommandParser;
+import minesweeper.Parser.DifficultParser;
 import minesweeper.controller.MinesweeperController;
-import minesweeper.observ.Context;
+import minesweeper.model.GameDifficult;
+import minesweeper.observ.*;
 import minesweeper.record.Record;
 import minesweeper.record.RecordManager;
 import minesweeper.view.MinesweeperView;
@@ -10,13 +12,14 @@ import minesweeper.view.MinesweeperView;
 import java.util.Scanner;
 
 public class ConsoleView implements MinesweeperView {
-    private String[][] field;
-    private String gameState;
+    private ContextField field;
+    private ContextGameState gameState;
     private int time;
     private MinesweeperController controller;
     private final Scanner scanner = new Scanner(System.in);
     private final CommandParser parser = new CommandParser();
-    private String difficult;
+    private final DifficultParser difficultParser = new DifficultParser();
+    private ContextDifficult difficult;
     private RecordManager recordManager;
     private int height;
     private int width;
@@ -77,9 +80,13 @@ public class ConsoleView implements MinesweeperView {
 
         switch (choice){
             case "1":
+                controller.startGame(GameDifficult.EASY);
+                break;
             case "2":
+                controller.startGame(GameDifficult.MEDIUM);
+                break;
             case "3":
-                controller.startGame(choice);
+                controller.startGame(GameDifficult.HARD);
                 break;
             case "4":
                 while (true) {
@@ -112,16 +119,16 @@ public class ConsoleView implements MinesweeperView {
 
     public void displayGame() {
         switch (gameState) {
-            case "PLAYING":
+            case PLAYING:
                 printPlayingMessage();
                 break;
-            case "LOST":
+            case LOST:
                 printLostMessage();
                 break;
-            case "WON":
+            case WON:
                 printWonMessage();
                 break;
-            case "EXIT":
+            case EXIT:
                 controller.selectExitCommand();
                 return;
         }
@@ -144,10 +151,13 @@ public class ConsoleView implements MinesweeperView {
             System.out.printf("%-2d ", i); // номера строк
             for (int j = 0; j < width; j++) {
                 String cell;
-                if(field[i][j].equals("0")){
-                    cell = " ";
+                ContextCell fieldcell = field.getCell(i, j);
+                if(fieldcell.getState() == ContextCellState.OPEN){
+                    cell = String.valueOf(fieldcell.getSym());
+                }else if(fieldcell.getState() == ContextCellState.FLAG){
+                    cell = "F";
                 }else{
-                    cell = field[i][j];
+                    cell = "*";
                 }
                 System.out.printf("%-" + maxCellWidth + "s", cell);
             }
@@ -207,25 +217,25 @@ public class ConsoleView implements MinesweeperView {
             System.out.printf("%-2d ", i); // номера строк
             for (int j = 0; j < width; j++) {
                 String cell;
-                cell = field[i][j];
+                cell = String.valueOf(field.getCell(i,j).getSym());
                 System.out.printf("%-" + maxCellWidth + "s", cell);
             }
             System.out.println();
         }
     }
 
-    public void getNextCommand(String gameState) {
+    public void getNextCommand(ContextGameState gameState) {
         switch (gameState) {
-            case "PLAYING":
+            case PLAYING:
                 handlePlayingState();
                 break;
-            case "WON":
+            case WON:
                 handleWonState();
                 break;
-            case "LOST":
+            case LOST:
                 handleLostState();
                 break;
-            case "EXIT":
+            case EXIT:
                 controller.selectExitCommand();
                 break;
         }
@@ -318,16 +328,16 @@ public class ConsoleView implements MinesweeperView {
             String command = scanner.nextLine();
             switch (command){
                 case "1":
-                    handleResult("EASY");
+                    handleResult(ContextDifficult.EASY);
                     break;
                 case "2":
-                    handleResult("MEDIUM");
+                    handleResult(ContextDifficult.MEDIUM);
                     break;
                 case "3":
-                    handleResult("HARD");
+                    handleResult(ContextDifficult.HARD);
                     break;
                 case "4":
-                    handleResult("CUSTOM");
+                    handleResult(ContextDifficult.CUSTOM);
                     break;
                 default:
                     System.out.println("Неизвестная сложность, введите еще раз:");
@@ -337,9 +347,9 @@ public class ConsoleView implements MinesweeperView {
 
     }
 
-    private void handleResult(String difficult){
+    private void handleResult(ContextDifficult difficult){
         System.out.println("Таблица рекордов для выбранной сложности:");
-        for(Record i : recordManager.getRecords(difficult)){
+        for(Record i : recordManager.getRecords(difficultParser.parseDifficult(difficult))){
             System.out.println(i.getName() + ": " + i.getTime() + " sec.");
         }
         System.out.println();

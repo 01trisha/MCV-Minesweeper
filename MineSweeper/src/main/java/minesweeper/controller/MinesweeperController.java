@@ -15,7 +15,7 @@ public class MinesweeperController {
         model.addObserver(view);
     }
 
-    public void startGame(String difficult){
+    public void startGame(GameDifficult difficult){
         model.newGame(difficult);
     }
 

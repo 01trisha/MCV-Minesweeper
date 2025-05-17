@@ -26,9 +26,8 @@ public class RecordManager implements Serializable {
         }
     }
 
-    public List<Record> getRecords(String dif){
-        GameDifficult difficult = GameDifficult.valueOf(dif);
-        return new ArrayList<>(recordMap.get(difficult));
+    public List<Record> getRecords(GameDifficult dif){
+        return new ArrayList<>(recordMap.get(dif));
     }
 
     public void clearAllRecords(){

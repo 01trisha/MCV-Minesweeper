@@ -1,4 +1,4 @@
-package minesweeper.CommandParser;
+package minesweeper.Parser;
 
 public class CommandParser {
     public String[] parse(String line){
