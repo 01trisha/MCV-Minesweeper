@@ -15,10 +15,13 @@
 ```
 git clone https://github.com/01trisha/MVC-Minesweeper
 cd MVC-Minesweeper/MineSweeper
-./gradlew shadowJar
+./gradlew build
 
-java build/libs/MineSweeper-1.0-SNAPSHOT-all.jar
-//Или открываем папку проекта -> build -> libs -> запускаем файл MineSweeper-1.0-SNAPSHOT-all.jar
+//из терминала
+java build/libs/MineSweeper-all.jar
+//как полноценное приложение
+разархивировать build/distributions/MineSweepe-shadow-1.0.tar (или .zip)
+перейти в полученную папку - bin - запустить Minesweeper
 ```
 
 **Текстовая реализация**:
