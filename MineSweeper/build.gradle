@@ -1,22 +1,28 @@
 plugins {
     id 'java'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
-group = 'org.example'
-version = '1.0-SNAPSHOT'
-application {
-    mainClass = 'Minesweeper'
-}
+group = 'minesweeper'
+version = '1.0'
+jar.enabled = false
 repositories {
     mavenCentral()
 }
-jar {
-    manifest {
-        attributes 'Main-Class': 'Minesweeper'
-    }
+
+application {
+    mainClass = 'minesweeper.Minesweeper'
 }
+
+shadowJar {
+    manifest {
+        attributes 'Main-Class': 'minesweeper.Minesweeper'
+    }
+    archiveBaseName = 'Minesweeper'
+    archiveVersion = ''
+}
+
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'

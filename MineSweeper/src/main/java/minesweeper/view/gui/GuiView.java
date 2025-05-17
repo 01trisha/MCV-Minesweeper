@@ -28,7 +28,6 @@ public class GuiView implements MinesweeperView {
     private JLabel statusLabel;
     private JButton[][] cellButtons;
 
-    private Map<String, ImageIcon> icons = new HashMap<>();
     private int height;
     private int width;
     private final CommandParser parser = new CommandParser();
@@ -37,7 +36,6 @@ public class GuiView implements MinesweeperView {
     public void setController(MinesweeperController controller) {
         this.controller = controller;
         this.recordManager = controller.getRecordManager();
-        loadIcons();
         createMainWindow();
     }
 
@@ -48,26 +46,11 @@ public class GuiView implements MinesweeperView {
 
     @Override
     public void displayGame() {
-
-    }
-
-    private void loadIcons() {
-        try {
-            icons.put("*", new ImageIcon(getClass().getResource("/images/closed.png")));
-            icons.put("F", new ImageIcon(getClass().getResource("/images/flag.png")));
-            icons.put("M", new ImageIcon(getClass().getResource("/images/mine.png")));
-            icons.put(" ", new ImageIcon(getClass().getResource("/images/empty.png")));
-
-            for (int i = 1; i <= 8; i++) {
-                icons.put(String.valueOf(i), new ImageIcon(getClass().getResource("/images/" + i + ".png")));
-            }
-        } catch (Exception e) {
-            System.err.println("Не удалось загрузить изображения: " + e.getMessage());
-        }
+        // Реализация при необходимости
     }
 
     private void createMainWindow() {
-        mainFrame = new JFrame("Minesweeper");
+        mainFrame = new JFrame("minesweeper.Minesweeper");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(300, 200);
         mainFrame.setLocationRelativeTo(null);
@@ -80,7 +63,7 @@ public class GuiView implements MinesweeperView {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 0, 5, 0);
 
-        JLabel titleLabel = new JLabel("Minesweeper", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("minesweeper.Minesweeper", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         panel.add(titleLabel, gbc);
 
@@ -216,7 +199,7 @@ public class GuiView implements MinesweeperView {
     }
 
     private void createGameWindow() {
-        gameFrame = new JFrame("Minesweeper - Игра");
+        gameFrame = new JFrame("minesweeper.Minesweeper - Игра");
         gameFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         gameFrame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -241,14 +224,9 @@ public class GuiView implements MinesweeperView {
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                JButton button = new JButton();
+                JButton button = new JButton("*");
                 button.setPreferredSize(new Dimension(30, 30));
-
-                if (icons.containsKey("*")) {
-                    button.setIcon(icons.get("*"));
-                } else {
-                    button.setText("*");
-                }
+                button.setFont(new Font("Arial", Font.BOLD, 14));
 
                 final int x = i;
                 final int y = j;
@@ -354,13 +332,42 @@ public class GuiView implements MinesweeperView {
                     for (int j = 0; j < width; j++) {
                         String cellValue = field[i][j];
                         JButton button = cellButtons[i][j];
+                        button.setText(cellValue);
 
-                        if (icons.containsKey(cellValue)) {
-                            button.setIcon(icons.get(cellValue));
-                            button.setText("");
-                        } else {
-                            button.setIcon(null);
-                            button.setText(cellValue);
+                        // Устанавливаем цвет текста в зависимости от значения клетки
+                        switch (cellValue) {
+                            case "F":
+                                button.setForeground(Color.RED);
+                                break;
+                            case "M":
+                                button.setForeground(Color.BLACK);
+                                break;
+                            case "1":
+                                button.setForeground(Color.BLUE);
+                                break;
+                            case "2":
+                                button.setForeground(Color.GREEN.darker());
+                                break;
+                            case "3":
+                                button.setForeground(Color.RED);
+                                break;
+                            case "4":
+                                button.setForeground(Color.BLUE.darker());
+                                break;
+                            case "5":
+                                button.setForeground(Color.RED.darker());
+                                break;
+                            case "6":
+                                button.setForeground(Color.CYAN.darker());
+                                break;
+                            case "7":
+                                button.setForeground(Color.BLACK);
+                                break;
+                            case "8":
+                                button.setForeground(Color.GRAY);
+                                break;
+                            default:
+                                button.setForeground(Color.BLACK);
                         }
                     }
                 }
