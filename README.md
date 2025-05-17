@@ -14,7 +14,7 @@
 ## Запуск графической версии:
 ```
 git clone https://github.com/01trisha/MVC-Minesweeper
-cd MVC-Minesweeper
+cd MVC-Minesweeper/MineSweeper
 ./gradlew shadowJar
 
 java build/libs/MineSweeper-1.0-SNAPSHOT-all.jar
