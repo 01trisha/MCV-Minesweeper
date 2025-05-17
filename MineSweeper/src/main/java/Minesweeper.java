@@ -8,11 +8,11 @@ public class Minesweeper {
     public static void main(String[] args) {
         MinesweeperModel model = new MinesweeperModel();
         MinesweeperView view;
-        if (args[0].equals("text")){
-            view = new ConsoleView();
-        }else{
+//        if (args[0].equals("-txt")){
+//            view = new ConsoleView();
+//        }else{
             view = new GuiView();
-        }
+//        }
         MinesweeperController controller = new MinesweeperController(model, view);
         try {
             view.setController(controller);
