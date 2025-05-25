@@ -44,7 +44,7 @@ public class MinesweeperModel implements Observable {
         this.field = new Field(height, width);
         this.count_bomb = bomb;
         timer.reset();
-//        timer.start();
+        timer.stop();
         this.opened_cells = 0;
 
         notifyObservers();

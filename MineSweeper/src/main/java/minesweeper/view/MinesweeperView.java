@@ -7,7 +7,7 @@ import minesweeper.record.RecordManager;
 public interface MinesweeperView extends Observer {
     void setController(MinesweeperController controller);
     void start();
-    void displayGame();
+//    void displayGame();
 //    void printStartMessage();
 //    void printEndMessage();
 //    void printLostMessage();

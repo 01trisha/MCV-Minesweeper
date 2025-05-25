@@ -1,398 +1,498 @@
-//package minesweeper.view.gui;
-//
-//import minesweeper.Parser.CommandParser;
-//import minesweeper.controller.MinesweeperController;
-//import minesweeper.model.GameDifficult;
-//import minesweeper.observ.Context;
-//import minesweeper.record.Record;
-//import minesweeper.record.RecordManager;
-//import minesweeper.view.MinesweeperView;
-//
-//import javax.swing.*;
-//import javax.swing.border.EmptyBorder;
-//import java.awt.*;
-//import java.awt.event.MouseAdapter;
-//import java.awt.event.MouseEvent;
-//
-//public class GuiView implements MinesweeperView {
-//    private MinesweeperController controller;
-//    private RecordManager recordManager;
-//
-//    private JFrame mainFrame;
-//    private JFrame gameFrame;
-//    private JFrame recordsFrame;
-//
-//    private JPanel gamePanel;
-//    private JLabel timerLabel;
-//    private JLabel statusLabel;
-//    private JButton[][] cellButtons;
-//
-//    private int height;
-//    private int width;
-//    private final CommandParser parser = new CommandParser();
-//
-//    @Override
-//    public void setController(MinesweeperController controller) {
-//        this.controller = controller;
-//        this.recordManager = controller.getRecordManager();
-//        createMainWindow();
-//    }
-//
-//    @Override
-//    public void start() {
-//        SwingUtilities.invokeLater(() -> mainFrame.setVisible(true));
-//    }
-//
-//    @Override
-//    public void displayGame() {
-//        // Реализация при необходимости
-//    }
-//
-//    private void createMainWindow() {
-//        mainFrame = new JFrame("minesweeper.Minesweeper");
-//        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        mainFrame.setSize(300, 200);
-//        mainFrame.setLocationRelativeTo(null);
-//
-//        JPanel panel = new JPanel(new GridBagLayout());
-//        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
-//
-//        GridBagConstraints gbc = new GridBagConstraints();
-//        gbc.gridwidth = GridBagConstraints.REMAINDER;
-//        gbc.fill = GridBagConstraints.HORIZONTAL;
-//        gbc.insets = new Insets(5, 0, 5, 0);
-//
-//        JLabel titleLabel = new JLabel("minesweeper.Minesweeper", SwingConstants.CENTER);
-//        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-//        panel.add(titleLabel, gbc);
-//
-//        JButton newGameButton = new JButton("Новая игра");
-//        newGameButton.addActionListener(e -> showDifficultyDialog());
-//        panel.add(newGameButton, gbc);
-//
-//        JButton recordsButton = new JButton("Таблица рекордов");
-//        recordsButton.addActionListener(e -> showRecordsDialog());
-//        panel.add(recordsButton, gbc);
-//
-//        JButton exitButton = new JButton("Выход");
-//        exitButton.addActionListener(e -> controller.selectExitCommand());
-//        panel.add(exitButton, gbc);
-//
-//        mainFrame.add(panel);
-//    }
-//
-//    private void showDifficultyDialog() {
-//        JDialog dialog = new JDialog(mainFrame, "Выбор сложности", true);
-//        dialog.setLayout(new GridLayout(5, 1));
-//        dialog.setSize(300, 250);
-//        dialog.setLocationRelativeTo(mainFrame);
-//
-//        JButton easyButton = new JButton("Легкая (9x9, 10 мин)");
-//        easyButton.addActionListener(e -> {
-//            controller.startGame(GameDifficult.EASY);
-//            dialog.dispose();
-//        });
-//
-//        JButton mediumButton = new JButton("Средняя (9x9, 30 мин)");
-//        mediumButton.addActionListener(e -> {
-//            controller.startGame("MEDIUM");
-//            dialog.dispose();
-//        });
-//
-//        JButton hardButton = new JButton("Сложная (9x9, 50 мин)");
-//        hardButton.addActionListener(e -> {
-//            controller.startGame("HARD");
-//            dialog.dispose();
-//        });
-//
-//        JButton customButton = new JButton("Свои параметры");
-//        customButton.addActionListener(e -> {
-//            showCustomGameDialog();
-//            dialog.dispose();
-//        });
-//
-//        dialog.add(new JLabel("Выберите сложность:", SwingConstants.CENTER));
-//        dialog.add(easyButton);
-//        dialog.add(mediumButton);
-//        dialog.add(hardButton);
-//        dialog.add(customButton);
-//
-//        dialog.setVisible(true);
-//    }
-//
-//    private void showCustomGameDialog() {
-//        JDialog dialog = new JDialog(mainFrame, "Свои параметры", true);
-//        dialog.setLayout(new GridLayout(4, 2, 5, 5));
-//        dialog.setSize(300, 200);
-//        dialog.setLocationRelativeTo(mainFrame);
-//
-//        JTextField heightField = new JTextField();
-//        JTextField widthField = new JTextField();
-//        JTextField minesField = new JTextField();
-//
-//        dialog.add(new JLabel("Высота:"));
-//        dialog.add(heightField);
-//        dialog.add(new JLabel("Ширина:"));
-//        dialog.add(widthField);
-//        dialog.add(new JLabel("Количество мин:"));
-//        dialog.add(minesField);
-//
-//        JButton startButton = new JButton("Начать игру");
-//        startButton.addActionListener(e -> {
-//            try {
-//                int[] params = {
-//                        Integer.parseInt(heightField.getText()),
-//                        Integer.parseInt(widthField.getText()),
-//                        Integer.parseInt(minesField.getText())
-//                };
-//                controller.startGame(params);
-//                dialog.dispose();
-//            } catch (NumberFormatException ex) {
-//                JOptionPane.showMessageDialog(dialog, "Введите корректные числа!", "Ошибка", JOptionPane.ERROR_MESSAGE);
-//            }
-//        });
-//
-//        dialog.add(startButton);
-//        dialog.setVisible(true);
-//    }
-//
-//    private void showRecordsDialog() {
-//        recordsFrame = new JFrame("Таблица рекордов");
-//        recordsFrame.setSize(400, 400);
-//        recordsFrame.setLocationRelativeTo(mainFrame);
-//
-//        JTabbedPane tabbedPane = new JTabbedPane();
-//        String[] difficulties = {"EASY", "MEDIUM", "HARD", "CUSTOM"};
-//
-//        for (String difficulty : difficulties) {
-//            DefaultListModel<String> listModel = new DefaultListModel<>();
-//            for (Record record : recordManager.getRecords(difficulty)) {
-//                listModel.addElement(record.getName() + ": " + record.getTime() + " сек.");
-//            }
-//
-//            JList<String> recordsList = new JList<>(listModel);
-//            JScrollPane scrollPane = new JScrollPane(recordsList);
-//
-//            JPanel panel = new JPanel(new BorderLayout());
-//            panel.add(scrollPane, BorderLayout.CENTER);
-//
-//            JButton clearButton = new JButton("Очистить");
-//            clearButton.addActionListener(e -> {
-//                controller.selectClearAllRecords();
-//                listModel.clear();
-//            });
-//
-//            panel.add(clearButton, BorderLayout.SOUTH);
-//            tabbedPane.addTab(difficulty, panel);
-//        }
-//
-//        JButton backButton = new JButton("Назад");
-//        backButton.addActionListener(e -> recordsFrame.dispose());
-//
-//        JPanel mainPanel = new JPanel(new BorderLayout());
-//        mainPanel.add(tabbedPane, BorderLayout.CENTER);
-//        mainPanel.add(backButton, BorderLayout.SOUTH);
-//
-//        recordsFrame.add(mainPanel);
-//        recordsFrame.setVisible(true);
-//    }
-//
-//    private void createGameWindow() {
-//        gameFrame = new JFrame("minesweeper.Minesweeper - Игра");
-//        gameFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-//        gameFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-//            @Override
-//            public void windowClosing(java.awt.event.WindowEvent e) {
-//                controller.selectExitCommand();
-//            }
-//        });
-//
-//        JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
-//        mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-//
-//        // Панель статуса
-//        JPanel statusPanel = new JPanel(new GridLayout(1, 2, 5, 5));
-//        timerLabel = new JLabel("Время: 0 сек.", SwingConstants.CENTER);
-//        statusLabel = new JLabel("Статус: Игра", SwingConstants.CENTER);
-//        statusPanel.add(timerLabel);
-//        statusPanel.add(statusLabel);
-//
-//        // Игровое поле
-//        gamePanel = new JPanel(new GridLayout(height, width, 1, 1));
-//        cellButtons = new JButton[height][width];
-//
-//        for (int i = 0; i < height; i++) {
-//            for (int j = 0; j < width; j++) {
-//                JButton button = new JButton("*");
-//                button.setPreferredSize(new Dimension(30, 30));
-//                button.setFont(new Font("Arial", Font.BOLD, 14));
-//
-//                final int x = i;
-//                final int y = j;
-//
-//                button.addMouseListener(new MouseAdapter() {
-//                    @Override
-//                    public void mouseClicked(MouseEvent e) {
-//                        if (SwingUtilities.isLeftMouseButton(e)) {
-//                            controller.selectOpenCellCommand(x, y);
-//                        } else if (SwingUtilities.isRightMouseButton(e)) {
-//                            controller.selectToggleFlagCommand(x, y);
-//                        }
-//                    }
-//                });
-//
-//                cellButtons[i][j] = button;
-//                gamePanel.add(button);
-//            }
-//        }
-//
-//        // Кнопки управления
-//        JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
-//        JButton newGameButton = new JButton("Новая игра");
-//        newGameButton.addActionListener(e -> showDifficultyDialog());
-//
-//        JButton exitButton = new JButton("Выход");
-//        exitButton.addActionListener(e -> controller.selectExitCommand());
-//
-//        controlPanel.add(newGameButton);
-//        controlPanel.add(exitButton);
-//
-//        mainPanel.add(statusPanel, BorderLayout.NORTH);
-//        mainPanel.add(new JScrollPane(gamePanel), BorderLayout.CENTER);
-//        mainPanel.add(controlPanel, BorderLayout.SOUTH);
-//
-//        gameFrame.add(mainPanel);
-//        gameFrame.pack();
-//        gameFrame.setLocationRelativeTo(mainFrame);
-//    }
-//
-//    private void showGameResultDialog(String title, String message, boolean showSaveButton) {
-//        JDialog dialog = new JDialog(gameFrame, title, true);
-//        dialog.setLayout(new BorderLayout(5, 5));
-//        dialog.setSize(300, 150);
-//        dialog.setLocationRelativeTo(gameFrame);
-//
-//        JLabel messageLabel = new JLabel(message, SwingConstants.CENTER);
-//        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
-//
-//        JButton newGameButton = new JButton("Новая игра");
-//        newGameButton.addActionListener(e -> {
-//            dialog.dispose();
-//            showDifficultyDialog();
-//        });
-//
-//        if (showSaveButton) {
-//            JButton saveButton = new JButton("Сохранить результат");
-//            saveButton.addActionListener(e -> {
-//                String name = JOptionPane.showInputDialog(dialog, "Введите ваше имя:", "Сохранение рекорда", JOptionPane.PLAIN_MESSAGE);
-//                if (name != null && !name.isEmpty()) {
-//                    controller.selectSaveRecords(name);
-//                    dialog.dispose();
-//                }
-//            });
-//            buttonPanel.add(saveButton);
-//        }
-//
-//        JButton exitButton = new JButton("Выход");
-//        exitButton.addActionListener(e -> {
-//            dialog.dispose();
-//            controller.selectExitCommand();
-//        });
-//
-//        buttonPanel.add(newGameButton);
-//        buttonPanel.add(exitButton);
-//
-//        dialog.add(messageLabel, BorderLayout.CENTER);
-//        dialog.add(buttonPanel, BorderLayout.SOUTH);
-//        dialog.setVisible(true);
-//    }
-//
-//    @Override
-//    public void update(Context context) {
-//        SwingUtilities.invokeLater(() -> {
-//            if (context.getOnlyTimeUpdate()) {
-//                // Обновляем только время
-//                timerLabel.setText("Время: " + context.getTime() + " сек.");
-//            } else {
-//                // Полное обновление игры
-//                String[][] field = context.getField();
-//                String gameState = context.getGameState();
-//                height = context.getHeight();
-//                width = context.getWidth();
-//
-//                if (gameFrame == null) {
-//                    createGameWindow();
-//                    gameFrame.setVisible(true);
-//                    mainFrame.setVisible(false);
-//                }
-//
-//                // Обновляем клетки поля
-//                for (int i = 0; i < height; i++) {
-//                    for (int j = 0; j < width; j++) {
-//                        String cellValue = field[i][j];
-//                        JButton button = cellButtons[i][j];
-//                        button.setText(cellValue);
-//
-//                        // Устанавливаем цвет текста в зависимости от значения клетки
-//                        switch (cellValue) {
-//                            case "F":
-//                                button.setForeground(Color.RED);
-//                                break;
-//                            case "M":
-//                                button.setForeground(Color.BLACK);
-//                                break;
-//                            case "1":
-//                                button.setForeground(Color.BLUE);
-//                                break;
-//                            case "2":
-//                                button.setForeground(Color.GREEN.darker());
-//                                break;
-//                            case "3":
-//                                button.setForeground(Color.RED);
-//                                break;
-//                            case "4":
-//                                button.setForeground(Color.BLUE.darker());
-//                                break;
-//                            case "5":
-//                                button.setForeground(Color.RED.darker());
-//                                break;
-//                            case "6":
-//                                button.setForeground(Color.CYAN.darker());
-//                                break;
-//                            case "7":
-//                                button.setForeground(Color.BLACK);
-//                                break;
-//                            case "8":
-//                                button.setForeground(Color.GRAY);
-//                                break;
-//                            default:
-//                                button.setForeground(Color.BLACK);
-//                        }
-//                    }
-//                }
-//
-//                // Обновляем статус игры
-//                switch (gameState) {
-//                    case "PLAYING":
-//                        statusLabel.setText("Статус: Игра");
-//                        break;
-//                    case "WON":
-//                        statusLabel.setText("Статус: Победа!");
-//                        showGameResultDialog("Победа!", "Вы выиграли!", true);
-//                        break;
-//                    case "LOST":
-//                        statusLabel.setText("Статус: Поражение");
-//                        showGameResultDialog("Поражение", "Вы проиграли!", false);
-//                        break;
-//                    case "EXIT":
-//                        gameFrame.dispose();
-//                        mainFrame.setVisible(true);
-//                        break;
-//                }
-//
-//                // Обновляем время (даже при полном обновлении)
-//                timerLabel.setText("Время: " + context.getTime() + " сек.");
-//            }
-//        });
-//    }
-//}
+package minesweeper.view.gui;
+
+import minesweeper.controller.MinesweeperController;
+import minesweeper.model.GameDifficult;
+import minesweeper.observ.*;
+import minesweeper.record.Record;
+import minesweeper.record.RecordManager;
+import minesweeper.view.MinesweeperView;
+
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
+
+public class GuiView implements MinesweeperView {
+    private MinesweeperController controller;
+    private RecordManager recordManager;
+
+    private JFrame mainFrame;
+    private JPanel currentPanel;
+
+    // Игровые компоненты
+    private JLabel timeLabel;
+    private JLabel statusLabel;
+    private JButton[][] cellButtons;
+
+    private ContextField field;
+    private ContextGameState gameState;
+    private int time;
+    private ContextDifficult difficult;
+    private int height;
+    private int width;
+
+    // Размеры и стили
+    private final int CELL_SIZE = 30;
+    private final Color BACKGROUND_COLOR = new Color(55, 89, 112); // Темно-зеленый
+    private final Color TEXT_COLOR = new Color(202, 210, 217);
+    private final Color GRID_COLOR = new Color(22, 36, 46); // Темнее фона
+    private final Font CELL_FONT = new Font("Arial", Font.BOLD, 16);
+
+    // Иконки
+    private ImageIcon FLAG_ICON;
+    private ImageIcon MINE_ICON;
+    private ImageIcon DEFAULT_ICON;
+
+    @Override
+    public void setController(MinesweeperController controller) {
+        this.controller = controller;
+        this.recordManager = controller.getRecordManager();
+    }
+
+    private void initGUI() {
+        mainFrame = new JFrame("Сапёр");
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setSize(500, 600);
+        mainFrame.setResizable(false); // Запрещаем изменение размера окна
+
+        // Загрузка иконок
+        FLAG_ICON = loadIcon("flag.png");
+        MINE_ICON = loadIcon("mine.png");
+        DEFAULT_ICON = loadIcon("default.png");
+
+        showMainMenu();
+//        mainFrame.pack();
+        mainFrame.setVisible(true);
+    }
+
+    private ImageIcon loadIcon(String path) {
+        try {
+            ImageIcon originalIcon = new ImageIcon(getClass().getClassLoader().getResource(path));
+            Image scaledImage = originalIcon.getImage().getScaledInstance(
+                    CELL_SIZE, CELL_SIZE, Image.SCALE_SMOOTH);
+            return new ImageIcon(scaledImage);
+        } catch (Exception e) {
+            System.err.println("Не удалось загрузить иконку: " + path);
+            return new ImageIcon(); // Пустая иконка
+        }
+    }
+
+    private void showMainMenu() {
+        clearFrame();
+        currentPanel = new JPanel(new GridBagLayout());
+        currentPanel.setBackground(BACKGROUND_COLOR);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        JLabel titleLabel = new JLabel("Сапёр", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        titleLabel.setForeground(TEXT_COLOR);
+        currentPanel.add(titleLabel, gbc);
+
+        JButton newGameButton = createStyledButton("Новая игра");
+        newGameButton.addActionListener(e -> showDifficultySelection());
+        currentPanel.add(newGameButton, gbc);
+
+        JButton recordsButton = createStyledButton("Таблица рекордов");
+        recordsButton.addActionListener(e -> showRecordsTable());
+        currentPanel.add(recordsButton, gbc);
+
+        JButton exitButton = createStyledButton("Выход");
+        exitButton.addActionListener(e -> controller.selectExitCommand());
+        currentPanel.add(exitButton, gbc);
+
+        mainFrame.add(currentPanel);
+        mainFrame.setSize(500, 600); // Фиксированный размер для меню
+        mainFrame.revalidate();
+    }
+
+    private JButton createStyledButton(String text) {
+        JButton button = new JButton(text);
+        button.setBackground(GRID_COLOR);
+        button.setForeground(TEXT_COLOR);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createLineBorder(GRID_COLOR.darker(), 2));
+        button.setFont(new Font("Arial", Font.BOLD, 14));
+        button.setPreferredSize(new Dimension(200, 40));
+        return button;
+    }
+
+    private void showDifficultySelection() {
+        clearFrame();
+        currentPanel = new JPanel(new GridBagLayout());
+        currentPanel.setBackground(BACKGROUND_COLOR);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        JLabel titleLabel = new JLabel("Выберите сложность", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titleLabel.setForeground(TEXT_COLOR);
+        currentPanel.add(titleLabel, gbc);
+
+        JButton easyButton = createStyledButton("Легкая (9x9, 10 бомб)");
+        easyButton.addActionListener(e -> controller.startGame(GameDifficult.EASY));
+        currentPanel.add(easyButton, gbc);
+
+        JButton mediumButton = createStyledButton("Средняя (15x15, 40 бомб)");
+        mediumButton.addActionListener(e -> controller.startGame(GameDifficult.MEDIUM));
+        currentPanel.add(mediumButton, gbc);
+
+        JButton hardButton = createStyledButton("Сложная (20x20, 99 бомб)");
+        hardButton.addActionListener(e -> controller.startGame(GameDifficult.HARD));
+        currentPanel.add(hardButton, gbc);
+
+        JButton customButton = createStyledButton("Свои параметры");
+        customButton.addActionListener(e -> showCustomGameDialog());
+        currentPanel.add(customButton, gbc);
+
+        JButton backButton = createStyledButton("Назад");
+        backButton.addActionListener(e -> showMainMenu());
+        currentPanel.add(backButton, gbc);
+
+        mainFrame.add(currentPanel);
+        mainFrame.setSize(500, 600); // Фиксированный размер
+        mainFrame.revalidate();
+    }
+
+    private void showCustomGameDialog() {
+        JPanel panel = new JPanel(new GridLayout(3, 2, 5, 5));
+        panel.setBackground(BACKGROUND_COLOR);
+
+        JLabel heightLabel = new JLabel("Высота:");
+        heightLabel.setForeground(TEXT_COLOR);
+        JTextField heightField = createStyledTextField("9");
+
+        JLabel widthLabel = new JLabel("Ширина:");
+        widthLabel.setForeground(TEXT_COLOR);
+        JTextField widthField = createStyledTextField("9");
+
+        JLabel minesLabel = new JLabel("Мины:");
+        minesLabel.setForeground(TEXT_COLOR);
+        JTextField minesField = createStyledTextField("10");
+
+        panel.add(heightLabel);
+        panel.add(heightField);
+        panel.add(widthLabel);
+        panel.add(widthField);
+        panel.add(minesLabel);
+        panel.add(minesField);
+
+        int result = JOptionPane.showConfirmDialog(mainFrame, panel,
+                "Свои параметры", JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
+            try {
+                int height = Integer.parseInt(heightField.getText());
+                int width = Integer.parseInt(widthField.getText());
+                int mines = Integer.parseInt(minesField.getText());
+
+                if (height < 1 || width < 1 || mines < 1) {
+                    throw new NumberFormatException();
+                }
+
+                controller.startGame(new int[]{height, width, mines});
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(mainFrame,
+                        "Параметры должны быть числами больше 0",
+                        "Ошибка", JOptionPane.ERROR_MESSAGE);
+                showCustomGameDialog();
+            }
+        }
+    }
+
+    private JTextField createStyledTextField(String text) {
+        JTextField textField = new JTextField(text);
+        textField.setForeground(TEXT_COLOR);
+        textField.setBackground(GRID_COLOR);
+        textField.setCaretColor(TEXT_COLOR);
+        textField.setBorder(BorderFactory.createLineBorder(GRID_COLOR.darker(), 1));
+        textField.setFont(new Font("Arial", Font.PLAIN, 14));
+        textField.setHorizontalAlignment(JTextField.CENTER);
+        return textField;
+    }
+
+    private void showRecordsTable() {
+        clearFrame();
+        currentPanel = new JPanel(new BorderLayout());
+        currentPanel.setBackground(BACKGROUND_COLOR);
+
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.setBackground(BACKGROUND_COLOR);
+        tabbedPane.setForeground(TEXT_COLOR);
+
+        tabbedPane.addTab("Легкая", createDifficultyRecordsPanel(GameDifficult.EASY));
+        tabbedPane.addTab("Средняя", createDifficultyRecordsPanel(GameDifficult.MEDIUM));
+        tabbedPane.addTab("Сложная", createDifficultyRecordsPanel(GameDifficult.HARD));
+        tabbedPane.addTab("Свои параметры", createDifficultyRecordsPanel(GameDifficult.CUSTOM));
+
+        currentPanel.add(tabbedPane, BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(BACKGROUND_COLOR);
+        JButton clearButton = createStyledButton("Очистить все записи");
+        clearButton.addActionListener(e -> {
+            controller.selectClearAllRecords();
+            showRecordsTable();
+        });
+
+
+        JButton backButton = createStyledButton("Назад");
+        backButton.addActionListener(e -> showMainMenu());
+
+        buttonPanel.add(clearButton);
+        buttonPanel.add(backButton);
+        currentPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        mainFrame.add(currentPanel);
+        mainFrame.setSize(500, 500); // Фиксированный размер для таблицы рекордов
+        mainFrame.revalidate();
+    }
+
+    private JPanel createDifficultyRecordsPanel(GameDifficult difficult) {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(BACKGROUND_COLOR);
+
+        List<Record> records = recordManager.getRecords(difficult);
+
+        String[] columnNames = {"Место", "Имя", "Время"};
+        Object[][] data = new Object[records.size()][3];
+
+        for (int i = 0; i < records.size(); i++) {
+            data[i][0] = i + 1;
+            data[i][1] = records.get(i).getName();
+            data[i][2] = records.get(i).getTime() + " сек.";
+        }
+
+        JTable table = new JTable(data, columnNames);
+        table.setBackground(BACKGROUND_COLOR);
+        table.setForeground(TEXT_COLOR);
+        table.setGridColor(GRID_COLOR);
+        table.setFont(CELL_FONT);
+        table.setRowHeight(25);
+
+        table.getTableHeader().setBackground(GRID_COLOR);
+        table.getTableHeader().setForeground(TEXT_COLOR);
+        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBorder(BorderFactory.createLineBorder(GRID_COLOR.darker(), 1));
+
+        panel.add(scrollPane, BorderLayout.CENTER);
+        return panel;
+    }
+
+    private void showGameField() {
+        clearFrame();
+        currentPanel = new JPanel(new BorderLayout());
+        currentPanel.setBackground(BACKGROUND_COLOR);
+
+        // Панель информации
+        JPanel infoPanel = new JPanel(new GridLayout(1, 2));
+        infoPanel.setBackground(BACKGROUND_COLOR);
+
+        timeLabel = new JLabel("Время: 0", SwingConstants.CENTER);
+        timeLabel.setForeground(TEXT_COLOR);
+        timeLabel.setFont(new Font("Arial", Font.BOLD, 14));
+
+        statusLabel = new JLabel("Сделайте первый ход", SwingConstants.CENTER);
+        statusLabel.setForeground(TEXT_COLOR);
+        statusLabel.setFont(new Font("Arial", Font.BOLD, 14));
+
+        infoPanel.add(timeLabel);
+        infoPanel.add(statusLabel);
+
+        currentPanel.add(infoPanel, BorderLayout.NORTH);
+
+        // Игровое поле
+        JPanel fieldPanel = new JPanel(new GridLayout(height, width, 1, 1));
+        fieldPanel.setBackground(GRID_COLOR);
+        cellButtons = new JButton[height][width];
+
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                JButton button = new JButton();
+                button.setPreferredSize(new Dimension(CELL_SIZE, CELL_SIZE));
+                button.setBackground(Color.DARK_GRAY);
+                button.setForeground(TEXT_COLOR);
+                button.setFont(CELL_FONT);
+                button.setFocusPainted(false);
+                button.setBorder(BorderFactory.createLineBorder(GRID_COLOR, 1));
+                button.setIcon(DEFAULT_ICON);
+
+                final int x = i;
+                final int y = j;
+
+                button.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if (gameState != ContextGameState.PLAYING) return;
+
+                        if (SwingUtilities.isLeftMouseButton(e)) {
+                            controller.selectOpenCellCommand(x, y);
+                        } else if (SwingUtilities.isRightMouseButton(e)) {
+                            controller.selectToggleFlagCommand(x, y);
+                        }
+                    }
+                });
+
+                cellButtons[i][j] = button;
+                fieldPanel.add(button);
+            }
+        }
+
+        JScrollPane scrollPane = new JScrollPane(fieldPanel);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        currentPanel.add(scrollPane, BorderLayout.CENTER);
+
+        // Кнопка возврата
+        JButton backButton = createStyledButton("В меню");
+        backButton.addActionListener(e -> showMainMenu());
+        currentPanel.add(backButton, BorderLayout.SOUTH);
+
+        mainFrame.add(currentPanel);
+        // Устанавливаем размер окна в зависимости от размера поля
+        mainFrame.setSize(width * CELL_SIZE + 30, height * CELL_SIZE + 120);
+        mainFrame.revalidate();
+    }
+
+    @Override
+    public void update(Context context) {
+        SwingUtilities.invokeLater(() -> {
+            if (!context.getOnlyTimeUpdate()) {
+                // Полное обновление
+                field = context.getField();
+                gameState = context.getGameState();
+                difficult = context.getDifficult();
+                height = context.getHeight();
+                width = context.getWidth();
+
+                if (gameState == ContextGameState.PLAYING) {
+                    showGameField();
+                }
+                updateField();
+                updateStatus();
+            }
+
+            // Обновление времени (происходит всегда)
+            time = context.getTime();
+            if (timeLabel != null) {
+                timeLabel.setText("Время: " + time);
+            }
+        });
+    }
+
+    private void updateField() {
+        if (cellButtons == null) return;
+
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                JButton button = cellButtons[i][j];
+                ContextCell cell = field.getCell(i, j);
+
+                if (cell.getState() == ContextCellState.OPEN) {
+                    button.setBackground(BACKGROUND_COLOR);
+                    button.setIcon(null); // Убираем иконку
+
+                    if (cell.getSym() == 'M') {
+                        button.setIcon(MINE_ICON);
+                    } else if (cell.getSym() != ' ') {
+                        button.setText(String.valueOf(cell.getSym()));
+                    } else {
+                        button.setText("");
+                    }
+                } else if (cell.getState() == ContextCellState.FLAG) {
+                    button.setIcon(FLAG_ICON);
+                    button.setText("");
+                } else {
+                    button.setIcon(DEFAULT_ICON);
+                    button.setText("");
+                }
+            }
+        }
+    }
+
+    private void updateStatus() {
+        if (statusLabel == null) return;
+
+        switch (gameState) {
+            case PLAYING:
+                statusLabel.setText("Игра идет...");
+                break;
+            case WON:
+                statusLabel.setText("Вы победили!");
+                showGameResultDialog(true);
+                break;
+            case LOST:
+                statusLabel.setText("Вы проиграли!");
+                showGameResultDialog(false);
+                break;
+        }
+    }
+
+    private void showGameResultDialog(boolean won) {
+        Object[] options;
+        if (won) {
+            options = new Object[]{"Новая игра", "Сохранить результат", "В меню"};
+        } else {
+            options = new Object[]{"Новая игра", "В меню"};
+        }
+
+        int choice = JOptionPane.showOptionDialog(mainFrame,
+                "Ваше время: " + time + " сек.",
+                won ? "Победа!" : "Поражение",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
+                null, options, options[0]);
+
+        if (won) {
+            switch (choice) {
+                case 0:
+                    showDifficultySelection();
+                    break;
+                case 1:
+                    saveRecord();
+                    break;
+                case 2:
+                    showMainMenu();
+                    break;
+            }
+        } else {
+            switch (choice) {
+                case 0:
+                    showDifficultySelection();
+                    break;
+                case 1:
+                    showMainMenu();
+                    break;
+            }
+        }
+    }
+
+    private void saveRecord() {
+        String name = JOptionPane.showInputDialog(mainFrame,
+                "Введите ваше имя:", "Сохранение результата",
+                JOptionPane.PLAIN_MESSAGE);
+
+        if (name != null && !name.trim().isEmpty()) {
+            controller.selectSaveRecords(name.trim());
+            showMainMenu();
+        }
+    }
+
+    private void clearFrame() {
+        if (currentPanel != null) {
+            mainFrame.remove(currentPanel);
+        }
+    }
+
+    @Override
+    public void start() {
+        SwingUtilities.invokeLater(this::initGUI);
+    }
+}

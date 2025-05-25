@@ -2,8 +2,8 @@ package minesweeper.model;
 
 public enum GameDifficult {
     EASY(9, 9, 10),
-    MEDIUM(9, 9, 30),
-    HARD(9, 9, 59),
+    MEDIUM(15, 15, 40),
+    HARD(20, 20, 99),
     CUSTOM(0, 0, 0){
         @Override
         public void setCustomParameters(int height, int width, int bomb){
