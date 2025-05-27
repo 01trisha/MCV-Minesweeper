@@ -119,6 +119,7 @@ public class ConsoleView implements MinesweeperView {
 
     public void displayGame() {
         switch (gameState) {
+//            case START:
             case PLAYING:
                 printPlayingMessage();
                 break;

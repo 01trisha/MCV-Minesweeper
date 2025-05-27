@@ -8,7 +8,6 @@ import minesweeper.record.RecordManager;
 import minesweeper.view.MinesweeperView;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -17,11 +16,11 @@ import java.util.List;
 public class GuiView implements MinesweeperView {
     private MinesweeperController controller;
     private RecordManager recordManager;
+//    private int counter = 0;
 
     private JFrame mainFrame;
     private JPanel currentPanel;
 
-    // Игровые компоненты
     private JLabel timeLabel;
     private JLabel statusLabel;
     private JButton[][] cellButtons;
@@ -33,17 +32,16 @@ public class GuiView implements MinesweeperView {
     private int height;
     private int width;
 
-    // Размеры и стили
     private final int CELL_SIZE = 30;
     private final Color BACKGROUND_COLOR = new Color(55, 89, 112); // Темно-зеленый
     private final Color TEXT_COLOR = new Color(202, 210, 217);
     private final Color GRID_COLOR = new Color(22, 36, 46); // Темнее фона
     private final Font CELL_FONT = new Font("Arial", Font.BOLD, 16);
 
-    // Иконки
     private ImageIcon FLAG_ICON;
     private ImageIcon MINE_ICON;
     private ImageIcon DEFAULT_ICON;
+    private ImageIcon BACKGROUND_IMAGE;
 
     @Override
     public void setController(MinesweeperController controller) {
@@ -51,31 +49,33 @@ public class GuiView implements MinesweeperView {
         this.recordManager = controller.getRecordManager();
     }
 
-    private void initGUI() {
+    @Override
+    public void start() {
+        SwingUtilities.invokeLater(this::guiStart);
+    }
+
+    private void guiStart() {
         mainFrame = new JFrame("Сапёр");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(500, 600);
-        mainFrame.setResizable(false); // Запрещаем изменение размера окна
+        mainFrame.setResizable(false);
 
-        // Загрузка иконок
-        FLAG_ICON = loadIcon("flag.png");
-        MINE_ICON = loadIcon("mine.png");
-        DEFAULT_ICON = loadIcon("default.png");
-
+        FLAG_ICON = loadImage("flag.png", CELL_SIZE, CELL_SIZE);
+        MINE_ICON = loadImage("mine.png", CELL_SIZE, CELL_SIZE);
+        DEFAULT_ICON = loadImage("default.png", CELL_SIZE, CELL_SIZE);
+        BACKGROUND_IMAGE = loadImage("back.png", 600, 500);
         showMainMenu();
-//        mainFrame.pack();
         mainFrame.setVisible(true);
     }
 
-    private ImageIcon loadIcon(String path) {
+    private ImageIcon loadImage(String path, int HEIGHT, int WIDTH) {
         try {
             ImageIcon originalIcon = new ImageIcon(getClass().getClassLoader().getResource(path));
-            Image scaledImage = originalIcon.getImage().getScaledInstance(
-                    CELL_SIZE, CELL_SIZE, Image.SCALE_SMOOTH);
+            Image scaledImage = originalIcon.getImage().getScaledInstance(WIDTH, HEIGHT, Image.SCALE_SMOOTH);
             return new ImageIcon(scaledImage);
         } catch (Exception e) {
             System.err.println("Не удалось загрузить иконку: " + path);
-            return new ImageIcon(); // Пустая иконка
+            return new ImageIcon();
         }
     }
 
@@ -106,16 +106,14 @@ public class GuiView implements MinesweeperView {
         currentPanel.add(exitButton, gbc);
 
         mainFrame.add(currentPanel);
-        mainFrame.setSize(500, 600); // Фиксированный размер для меню
+        mainFrame.setSize(500, 600);
         mainFrame.revalidate();
     }
 
     private JButton createStyledButton(String text) {
-        JButton button = new JButton(text);
+        RoundedButton button = new RoundedButton(text);
         button.setBackground(GRID_COLOR);
         button.setForeground(TEXT_COLOR);
-        button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createLineBorder(GRID_COLOR.darker(), 2));
         button.setFont(new Font("Arial", Font.BOLD, 14));
         button.setPreferredSize(new Dimension(200, 40));
         return button;
@@ -156,7 +154,7 @@ public class GuiView implements MinesweeperView {
         currentPanel.add(backButton, gbc);
 
         mainFrame.add(currentPanel);
-        mainFrame.setSize(500, 600); // Фиксированный размер
+        mainFrame.setSize(500, 600);
         mainFrame.revalidate();
     }
 
@@ -225,7 +223,7 @@ public class GuiView implements MinesweeperView {
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setBackground(BACKGROUND_COLOR);
-        tabbedPane.setForeground(TEXT_COLOR);
+        tabbedPane.setForeground(Color.BLACK);
 
         tabbedPane.addTab("Легкая", createDifficultyRecordsPanel(GameDifficult.EASY));
         tabbedPane.addTab("Средняя", createDifficultyRecordsPanel(GameDifficult.MEDIUM));
@@ -251,7 +249,7 @@ public class GuiView implements MinesweeperView {
         currentPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         mainFrame.add(currentPanel);
-        mainFrame.setSize(500, 500); // Фиксированный размер для таблицы рекордов
+        mainFrame.setSize(500, 500);
         mainFrame.revalidate();
     }
 
@@ -310,7 +308,6 @@ public class GuiView implements MinesweeperView {
 
         currentPanel.add(infoPanel, BorderLayout.NORTH);
 
-        // Игровое поле
         JPanel fieldPanel = new JPanel(new GridLayout(height, width, 1, 1));
         fieldPanel.setBackground(GRID_COLOR);
         cellButtons = new JButton[height][width];
@@ -351,13 +348,11 @@ public class GuiView implements MinesweeperView {
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         currentPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // Кнопка возврата
-        JButton backButton = createStyledButton("В меню");
-        backButton.addActionListener(e -> showMainMenu());
+        JButton backButton = createStyledButton("Завершить игру");
+        backButton.addActionListener(e -> controller.selecBackCommand());
         currentPanel.add(backButton, BorderLayout.SOUTH);
 
         mainFrame.add(currentPanel);
-        // Устанавливаем размер окна в зависимости от размера поля
         mainFrame.setSize(width * CELL_SIZE + 30, height * CELL_SIZE + 120);
         mainFrame.revalidate();
     }
@@ -380,7 +375,6 @@ public class GuiView implements MinesweeperView {
                 updateStatus();
             }
 
-            // Обновление времени (происходит всегда)
             time = context.getTime();
             if (timeLabel != null) {
                 timeLabel.setText("Время: " + time);
@@ -491,8 +485,4 @@ public class GuiView implements MinesweeperView {
         }
     }
 
-    @Override
-    public void start() {
-        SwingUtilities.invokeLater(this::initGUI);
-    }
 }

@@ -68,7 +68,7 @@ public class MinesweeperModel implements Observable {
         this.field = new Field(height, width);
         this.count_bomb = bomb;
         timer.reset();
-        timer.start();
+        timer.stop();
         this.opened_cells = 0;
 
         notifyObservers();
@@ -87,6 +87,7 @@ public class MinesweeperModel implements Observable {
             opened_cells++;
 
             if (opened_cells == 1) {
+//                gameState = GameState.PLAYING;
                 timer.start();
                 field.setMines(x, y, count_bomb);
                 field.updateCharCells();

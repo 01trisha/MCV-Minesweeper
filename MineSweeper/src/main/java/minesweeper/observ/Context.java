@@ -26,6 +26,7 @@ public class Context {
 
     private static ContextGameState rebaseGameState(GameState gameState){
         return switch (gameState) {
+//            case START -> ContextGameState.START;
             case PLAYING -> ContextGameState.PLAYING;
             case EXIT -> ContextGameState.EXIT;
             case CONFIGURING -> ContextGameState.CONFIGURING;

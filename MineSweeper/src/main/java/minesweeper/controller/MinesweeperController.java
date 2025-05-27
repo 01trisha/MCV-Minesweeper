@@ -1,6 +1,7 @@
 package minesweeper.controller;
 
 import minesweeper.model.GameDifficult;
+import minesweeper.model.GameState;
 import minesweeper.model.MinesweeperModel;
 import minesweeper.record.RecordManager;
 import minesweeper.view.MinesweeperView;
@@ -25,6 +26,10 @@ public class MinesweeperController {
 
     public void selectExitCommand(){
         model.endGame();
+    }
+
+    public void selecBackCommand(){
+        model.setGameState(GameState.LOST);
     }
 
     public void selectOpenCellCommand(int x, int y){
