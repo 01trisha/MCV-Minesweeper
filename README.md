@@ -59,3 +59,11 @@ java build/libs/MineSweeper-all.jar
 
 **Observer Context**:
 - маппит все данные model в более простые данные для сохранения инкапусляции
+
+
+# Прмеры работы
+![[example1.png]]
+
+![[example2.png]]
+
+![[example3.png]]
