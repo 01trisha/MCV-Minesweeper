@@ -57,7 +57,7 @@ public class GuiView implements MinesweeperView {
         mainFrame = new JFrame("Сапёр");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(500, 600);
-//        mainFrame.setResizable(false);
+        mainFrame.setResizable(false);
 
         FLAG_ICON = loadImage("flag.png", CELL_SIZE, CELL_SIZE);
         MINE_ICON = loadImage("mine.png", CELL_SIZE, CELL_SIZE);
