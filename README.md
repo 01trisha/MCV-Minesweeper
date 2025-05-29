@@ -62,8 +62,8 @@ java build/libs/MineSweeper-all.jar
 
 
 # Прмеры работы
-![[example1.png]]
+![пример игры]{https://github.com/01trisha/MVC-Minesweeper/blob/main/example3.png}
 
-![[example2.png]]
+![стартовое окно]{https://github.com/01trisha/MVC-Minesweeper/blob/main/example1.png}
 
-![[example3.png]]
+![таблица рекордов]{https://github.com/01trisha/MVC-Minesweeper/blob/main/example2.png}
