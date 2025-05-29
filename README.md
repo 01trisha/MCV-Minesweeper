@@ -2,7 +2,9 @@
 
 Классическая игра "Сапер" с текстовой и графической реализацией, таймером и таблицей рекордов 
 
-Используется MVC-шаблон программирования 
+Используется MVC-шаблон программирования
+
+![пример игры](https://github.com/01trisha/MVC-Minesweeper/blob/main/example3.png)
 
 **Графическая реализация**:
 
@@ -62,8 +64,7 @@ java build/libs/MineSweeper-all.jar
 
 
 # Прмеры работы
-![[example1.png]]
 
-![[example2.png]]
+![стартовое окно](https://github.com/01trisha/MVC-Minesweeper/blob/main/example1.png)
 
-![[example3.png]]
+![таблица рекордов](https://github.com/01trisha/MVC-Minesweeper/blob/main/example2.png)
