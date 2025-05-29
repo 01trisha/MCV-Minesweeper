@@ -16,7 +16,6 @@ import java.util.List;
 public class GuiView implements MinesweeperView {
     private MinesweeperController controller;
     private RecordManager recordManager;
-//    private int counter = 0;
     private JFrame mainFrame;
     private JPanel currentPanel;
 
