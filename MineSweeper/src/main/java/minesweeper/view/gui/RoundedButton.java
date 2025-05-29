@@ -13,7 +13,7 @@ class RoundedButton extends JButton {
 
     public RoundedButton(String text) {
         super(text);
-        setContentAreaFilled(false); // Отключаем стандартную заливку
+        setContentAreaFilled(false);
         setFocusPainted(false);
         setBorder(new LineBorder(GRID_COLOR.darker(), 2, true));
     }

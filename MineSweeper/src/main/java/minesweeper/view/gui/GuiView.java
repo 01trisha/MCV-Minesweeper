@@ -17,7 +17,6 @@ public class GuiView implements MinesweeperView {
     private MinesweeperController controller;
     private RecordManager recordManager;
 //    private int counter = 0;
-
     private JFrame mainFrame;
     private JPanel currentPanel;
 
@@ -33,9 +32,9 @@ public class GuiView implements MinesweeperView {
     private int width;
 
     private final int CELL_SIZE = 30;
-    private final Color BACKGROUND_COLOR = new Color(55, 89, 112); // Темно-зеленый
+    private final Color BACKGROUND_COLOR = new Color(55, 89, 112);
     private final Color TEXT_COLOR = new Color(202, 210, 217);
-    private final Color GRID_COLOR = new Color(22, 36, 46); // Темнее фона
+    private final Color GRID_COLOR = new Color(22, 36, 46);
     private final Font CELL_FONT = new Font("Arial", Font.BOLD, 16);
 
     private ImageIcon FLAG_ICON;
@@ -58,7 +57,7 @@ public class GuiView implements MinesweeperView {
         mainFrame = new JFrame("Сапёр");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(500, 600);
-        mainFrame.setResizable(false);
+//        mainFrame.setResizable(false);
 
         FLAG_ICON = loadImage("flag.png", CELL_SIZE, CELL_SIZE);
         MINE_ICON = loadImage("mine.png", CELL_SIZE, CELL_SIZE);
@@ -160,19 +159,18 @@ public class GuiView implements MinesweeperView {
 
     private void showCustomGameDialog() {
         JPanel panel = new JPanel(new GridLayout(3, 2, 5, 5));
-        panel.setBackground(BACKGROUND_COLOR);
-
+//        panel.setBackground(BACKGROUND_COLOR);
         JLabel heightLabel = new JLabel("Высота:");
-        heightLabel.setForeground(TEXT_COLOR);
-        JTextField heightField = createStyledTextField("9");
-
+        heightLabel.setForeground(Color.BLACK);
+//        JTextField heightField = createStyledTextField("9");
+        JTextField heightField = new JTextField("9");
         JLabel widthLabel = new JLabel("Ширина:");
-        widthLabel.setForeground(TEXT_COLOR);
-        JTextField widthField = createStyledTextField("9");
+        widthLabel.setForeground(Color.BLACK);
+        JTextField widthField = new JTextField("9");
 
         JLabel minesLabel = new JLabel("Мины:");
-        minesLabel.setForeground(TEXT_COLOR);
-        JTextField minesField = createStyledTextField("10");
+        minesLabel.setForeground(Color.BLACK);
+        JTextField minesField = new JTextField("10");
 
         panel.add(heightLabel);
         panel.add(heightField);
@@ -205,17 +203,17 @@ public class GuiView implements MinesweeperView {
         }
     }
 
-    private JTextField createStyledTextField(String text) {
-        JTextField textField = new JTextField(text);
-        textField.setForeground(TEXT_COLOR);
-        textField.setBackground(GRID_COLOR);
-        textField.setCaretColor(TEXT_COLOR);
-        textField.setBorder(BorderFactory.createLineBorder(GRID_COLOR.darker(), 1));
-        textField.setFont(new Font("Arial", Font.PLAIN, 14));
-        textField.setHorizontalAlignment(JTextField.CENTER);
-        return textField;
-    }
-
+//    private JTextField createStyledTextField(String text) {
+//        JTextField textField = new JTextField(text);
+//        textField.setForeground(TEXT_COLOR);
+//        textField.setBackground(GRID_COLOR);
+//        textField.setCaretColor(TEXT_COLOR);
+//        textField.setBorder(BorderFactory.createLineBorder(GRID_COLOR.darker(), 1));
+//        textField.setFont(new Font("Arial", Font.PLAIN, 14));
+//        textField.setHorizontalAlignment(JTextField.CENTER);
+//        return textField;
+//    }
+//
     private void showRecordsTable() {
         clearFrame();
         currentPanel = new JPanel(new BorderLayout());
